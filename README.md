@@ -1,6 +1,7 @@
 # Opto Genetic Stimulation
 
-Please see [https://kaboudian.github.io/opto-excitation/](https://kaboudian.github.io/opto-excitation/) for the live programs.
+Please see the following links for the live programs:
+1. [Uniform Optogenetic Pulse Response](https://kaboudian.github.io/opto-excitation/uniform_opto_pulse.html): This model assumes that the excitation cuases opening _some_ of the channels uniformly on each cell.
 
 ## Disclaimer
 

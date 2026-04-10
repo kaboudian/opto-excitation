@@ -1,0 +1,3923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Select_Model</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<!-- Online libraries and dependencies -->
+<script src='https://kaboudian.github.io/abubujs/libs/Abubu.latest.js'
+	    type='text/javascript'></script>
+<script 
+src='https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.5/ace.js'  
+type="text/javascript" charset="utf-8">
+</script>
+<script 
+    src='https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.5/mode-glsl.js'>
+</script>
+<script 
+    src='https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.5/theme-tomorrow.js'>
+</script>
+<script
+    src='https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.5/keybinding-vim.js'>
+</script>
+<script 
+    src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/underscore@1.13.6/underscore-umd-min.js"></script>
+
+<!-- local version of dependencies -->
+<!--
+<script src='/abubujs/libs/Abubu.latest.js'
+	    type='text/javascript'></script>
+<script 
+src='/libs/cdnjs.cloudflare.com_ajax_libs_ace_1.4.5_ace.js'  
+type="text/javascript" charset="utf-8">
+</script>
+<script 
+    src='/libs/cdnjs.cloudflare.com_ajax_libs_ace_1.4.5_mode-glsl.js'>
+</script>
+<script 
+    src='/libs/cdnjs.cloudflare.com_ajax_libs_ace_1.4.5_theme-tomorrow.js'>
+</script>
+<script
+    src='/libs/cdnjs.cloudflare.com_ajax_libs_ace_1.4.5_keybinding-vim.js'>
+</script>
+<script 
+    src='/libs/ajax.googleapis.com_ajax_libs_jquery_3.4.1_jquery.min.js'>
+</script>
+<script src='/libs/cdnjs.cloudflare.com_ajax_libs_jszip_3.6.0_jszip.min.js'></script>
+<script src='/libs/cdn.jsdelivr.net_npm_underscore@1.13.6_underscore-umd-min.js'></script>
+-->
+<style>
+
+/* unvisited link */
+a:link {
+    	color: blue;
+}
+
+/* visited link */
+a:visited {
+    	color: blue;
+}
+
+/* mouse over link */
+a:hover {
+    	color: hotpink;
+}
+
+/* selected link */
+a:active {
+    	color: blue;
+}
+/*
+li{
+    	margin : 10px 6px ;
+} */
+
+body {
+	counter-reset: h1;
+}
+
+
+h1{
+        max-width: 1024px ;
+	text-align:left;
+	color: white;
+       	background-color: #00254c;
+       	padding-left: 20px ;
+       	padding-top: 10px ;
+       	padding-bottom: 10px ;
+       	border-radius: 10px;
+}
+
+h2 {
+        max-width: 1024px ;
+    	color: #00254c;
+    	background-color: #e5e5e5 ;
+    	padding-left: 20px ;
+    	padding-top: 2.5px ;
+    	padding-bottom: 2.5px ;
+
+    	border-radius: 10px;
+}
+
+h3 {
+        max-width: 1024px ;
+    	color: #00254c;
+    	background-color: #f0f0f0 ;
+    	padding-left: 20px ;
+    	padding-top: 2.5px ;
+    	padding-bottom: 2.5px ;
+    	border-radius: 10px;
+}
+
+h4 {
+        max-width: 1024px ;
+    	color: #00254c;
+    	background-color: #fafafa ;
+    	padding-left: 20px ;
+    	padding-top: 2.5px ;
+    	padding-bottom: 2.5px ;
+    	border-radius: 10px;
+}
+
+p{
+    max-width : 700px  ;
+    padding-left: 10px ;
+}
+canvas.clickable:hover{
+    cursor:pointer ;
+    cursor:hand ;
+}
+
+.footer{
+    position : fixed ; 
+    max-width: 1024px ;
+    border-radius:10px ;
+    left : 0px ;
+    width : 100% ;
+    background-color: #fafafa;
+    color:black ;
+    bottom: 0px ;
+    text-align : left ;
+    font: 'italic 12pt Times' ;
+}
+
+
+div.relative {
+  position: relative;
+  height: 512px;
+  border: 1px solid black;
+  width:100% ;
+} 
+
+div.editor {
+  position : absolute;
+  top: 0px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width:100%;
+}
+#loading { 
+    position : fixed ;
+    bottom : 20px ;
+    left : 10px ;
+}
+#loadProgress {
+    width : 300px ;
+    background-color: #ddd ;
+}
+#loadBar {
+    width : 0% ;
+    height : 20px ;
+    background-color: #4caf50 ;
+    border-radius: 3px ;
+}
+
+</style>
+
+<style>
+    td, th{
+        vertical-align: top ;
+    }
+</style>
+</head>
+<!--&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+<!-- body of the html page                                             -->
+<!--&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+<!--<body onload='loadWebGL()'> when debugging is over remove the onload
+                                call to make sure the user can choose 
+                                which model to run -->
+<body onload='loadWebGL()'>
+    <h1>THE PROGRAM TO RULE THEM ALL</h1>
+    
+        <table>
+            </tr>
+            <tr>
+                <td>
+                    <canvas id=canvas_1 width=512 height=512>
+                        Your browser doesn't support HTML5.0
+                    </canvas>
+                </td>
+                <td>
+                    <canvas id=canvas_2 width=512 height=512>
+                        Your browser doesn't support HTML5.0
+                    </canvas>
+                </td>
+            </tr>
+        </table>
+    <div class='loaded'>
+    <h3>Instructions for modifiable sections.</h3>
+    <p>You can edit the source code for a number of the modeling shaders by accessing the <b>Edit/Save/Load Source Code</b> menu of the GUI. As soon as the shader is edited, the program automatically starts using the updated version of the code.</p>
+
+<p>Notice that GLSL does not allow for mixing of data types. So, floats
+and integers cannot be mixed unless directly type casted.</p>
+
+    <div class='relative' id='editorSection' style='display:none'>
+        <h2>Source code editor</h2>
+        <div class='editor' id='editor'></div>
+    </div>
+
+</div>    
+    
+<!--&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+<!-- All shaders included here (codes written in GLSL)                 -->
+<!--&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+<!-- ***************************************************************** -->
+<script id='prescribe2DFibers' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * prescribe2DFibers.frag   :    prescribe the fiber orientation in 2D
+ * domian.
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Mon 27 Jan 2025 12:18:15 (EST)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float;
+precision highp int ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+// interface vars ........................................................
+in vec2 cc ;
+
+// output colors .........................................................
+layout (location=0) out vec4 ocolor ;
+
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    ocolor = vec4(1.,1.,0,0) ;
+}
+</script><!-- end of prescribe2DFibers shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='cableIso2D' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * cableIso2D.frag   : calculating the cable equation and updating
+ * for isotropic tissue in 2D.
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Wed 11 Oct 2023 14:47:22 (EDT)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float;
+precision highp int ;
+precision highp sampler2D ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+in vec2 cc ;
+
+// interface variables ...................................................
+uniform sampler2D   vcolor ;                // laplacian is applied based
+                                            // on this texture
+uniform sampler2D   icolor ;                // texture of membrante
+                                            // potential. This will be the
+                                            // color that needs to be
+                                            // updated.
+                               
+uniform vec4        vltChannelMultiplier ;  // membrane potential channel
+                                            // multiplier
+
+uniform float       diffCoef ;              // diffusion coeficient
+uniform float       C_m ;                   // membrane capacitance
+uniform float       lx  ;                   // domain size in [cm]
+uniform float       dt ;                    // temporal res. in [ms]
+
+// output colors of the shader ...........................................
+layout (location = 0 ) out vec4 ocolor ;
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    // read the value of the color at the center of texel ................
+    vec4 color = texture( icolor , cc ) ;
+
+    // get the size of texture and create unit vectors ...................
+    vec2 size = vec2( textureSize( icolor, 0 ) ) ;
+    vec2 ii = vec2(1.,0.)/size ;
+    vec2 jj = vec2(0.,1.)/size ;
+
+    // calculate the spatial resolution ..................................
+    float dx = lx/size.x ;
+    float omega = 1./3. ;
+
+    // calculate the laplacian term ......................................
+    vec4 center =texture( vcolor , cc ) ; 
+    vec4 lap =
+        (1.-omega)*(
+                texture( vcolor , cc+ii )
+            +   texture( vcolor , cc-ii )
+            +   texture( vcolor , cc+jj )
+            +   texture( vcolor , cc-jj )
+            -4.*center  
+        )
+        + 0.5*omega*(
+                texture( vcolor , cc+ii+jj )
+            +   texture( vcolor , cc-ii-jj )
+            +   texture( vcolor , cc+jj-ii )
+            +   texture( vcolor , cc-jj+ii )
+            -4.*center 
+        ) ;
+
+    lap = lap/(dx*dx) ;
+
+    // Euler time-stepping ...............................................
+    ocolor = color + diffCoef*dt*lap*vltChannelMultiplier ;
+
+    return ;
+}
+</script><!-- end of cableIso2D shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='cableIso2DGeneral' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * cableIso2DGeneral.frag   :    
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Thu 30 Jan 2025 10:02:24 (EST)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+
+precision highp float;
+precision highp int ;
+precision highp sampler2D ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+in vec2 cc ;
+
+// interface variables ...................................................
+uniform sampler2D   vcolor ;                // laplacian is applied based
+                                            // on this texture
+uniform sampler2D   icolor ;                // texture of membrante
+                                            // potential. This will be the
+                                            // color that needs to be
+                                            // updated.
+uniform sampler2D   iphase ;
+uniform usampler2D  idir0, idir1, idir2, idir3 ;
+                               
+uniform vec4        vltChannelMultiplier ;  // membrane potential channel
+                                            // multiplier
+
+uniform float       diffCoef ;              // diffusion coeficient
+uniform float       C_m ;                   // membrane capacitance
+uniform float       lx  ;                   // domain size in [cm]
+uniform float       dt ;                    // temporal res. in [ms]
+
+// output colors of the shader ...........................................
+layout (location = 0 ) out vec4 ocolor ;
+
+
+// neighbor indices
+#define DIRJP       dir0.r  // north
+#define DIRJM       dir0.g  // south
+#define DIRIM       dir0.b  // west
+#define DIRIP       dir0.a  // east
+
+#define DIRIPJP     dir1.r  // north-east
+#define DIRIMJP     dir1.g  // north-west
+#define DIRIPJM     dir1.b  // south-east
+#define DIRIMJM     dir1.a  // south-west
+
+// sign of neighbor
+#define SODJP       dir2.r  // north
+#define SODJM       dir2.g  // south
+#define SODIM       dir2.b  // west
+#define SODIP       dir2.a  // east
+
+#define SODIPJP     dir3.r  // north-east
+#define SODIMJP     dir3.g  // north-west
+#define SODIPJM     dir3.b  // south-east
+#define SODIMJM     dir3.a  // south-west
+
+
+#define isInBounds(v)       (all(greaterThanEqual(v,ivec2(0))) &&\
+        all(lessThan(v,size)) )
+
+#define inDomain(v)         (texelFetch(iphase,ivec2(v),0).r>0.5) 
+#define isGood(v)           (inDomain(v) && isInBounds(v))
+#define isNotGood(v)        !isGood(v)
+
+/*========================================================================
+ * packing and unpacking two integers to and from a single unsigned int.
+ *========================================================================
+ */
+#define pack(a)   uint((uint((a).x)<<16)+uint((a).y))
+#define unpack(I)   ivec2(uint(I)>>16, uint(I) & uint(65535) )
+
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    ivec2 size  = textureSize( icolor, 0 ) ;
+    ivec2 C     = ivec2( floor(cc*vec2(size)) ) ;
+    
+    // read the value of the color at the center of texel ................
+    vec4 color = texelFetch( icolor , C, 0) ;
+
+    if (!inDomain(C) ){
+        ocolor = color ; 
+        return ;
+    }
+
+    uvec4 dir0 = texelFetch( idir0 , C, 0 ) ;
+    uvec4 dir1 = texelFetch( idir1 , C, 0 ) ;
+    uvec4 dir2 = texelFetch( idir2 , C, 0 ) ;
+    uvec4 dir3 = texelFetch( idir3 , C, 0 ) ;
+
+    // calculate the spatial resolution ..................................
+    float dx = lx/float(size.x) ;
+    float omega = 1./3. ;
+
+    // calculate the laplacian term ......................................
+    vec4 center =texelFetch( vcolor , C,0 ) ; 
+
+    vec4 lap =
+        (1.-omega)*(
+                texelFetch( vcolor , unpack(DIRIP) ,0 )
+            +   texelFetch( vcolor , unpack(DIRIM) ,0 )
+            +   texelFetch( vcolor , unpack(DIRJP) ,0 )
+            +   texelFetch( vcolor , unpack(DIRJM) ,0 )
+            -4.*center  
+        )
+        + 0.5*omega*(
+                texelFetch( vcolor , unpack(DIRIPJP),0 )
+            +   texelFetch( vcolor , unpack(DIRIPJM),0 )
+            +   texelFetch( vcolor , unpack(DIRIMJP),0 )
+            +   texelFetch( vcolor , unpack(DIRIMJM),0 )
+            -4.*center 
+        ) ;
+
+    lap = lap/(dx*dx) ;
+
+    // Euler time-stepping ...............................................
+    ocolor = color + diffCoef*dt*lap*vltChannelMultiplier ;
+
+    return ;
+}
+</script><!-- end of cableIso2DGeneral shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='cableAniso2D' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * cableAniso2D.frag    :    cable equation for anisotropic tissue
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Mon 27 Jan 2025 16:42:01 (EST)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float;
+precision highp int ;
+precision highp sampler2D ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+in vec2 cc ;
+
+// interface variables ...................................................
+uniform sampler2D   vcolor ;                // laplacian is applied based
+                                            // on this texture
+uniform sampler2D   icolor ;                // texture of membrante
+                                            // potential. This will be the
+                                            // color that needs to be
+                                            // updated.
+
+uniform sampler2D   ifiber ;                // texture of fiber
+                                            // orientation
+                               
+uniform vec4        vltChannelMultiplier ;  // membrane potential channel
+                                            // multiplier
+
+uniform float       diffCoef ;              // diffusion coeficient
+uniform float       C_m ;                   // membrane capacitance
+uniform float       lx  ;                   // domain size in [cm]
+uniform float       dt ;                    // temporal res. in [ms]
+
+// output colors of the shader ...........................................
+layout (location = 0 ) out vec4 ocolor ;
+
+/*========================================================================
+ * getDiff: macro to calculate the diffusion tensor from the provided
+ * fiber orientation vector, f, and the conductivity along the fiber,
+ * sigma_f, and conductivity in the transverse direction, sigma_t.
+ *========================================================================
+ */
+// 3D version ............................................................
+//define getDiff(sigma_f, sigma_t,f) \
+//    (sigma_t)*mat3(1.)+((sigma_f)-(sigma_t))*outerProduct((f),(f))
+
+// 2D version ............................................................
+#define getDiff(sigma_f, sigma_t,f) \
+    (sigma_t)*mat2(1.)+((sigma_f)-(sigma_t))*outerProduct((f),(f))
+
+
+#define V(pos)   texture(vcolor, pos)
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    // read the value of the color at the center of texel ................
+    vec4 color = texture( icolor , cc ) ;
+
+
+    // sigma_f and sigma_t ...............................................
+    float sigma_f = diffCoef ;
+    float sigma_t = sigma_f*0.0 ;
+
+    // get the size of texture and create unit vectors ...................
+    vec2 size = vec2( textureSize( icolor, 0 ) ) ;
+    vec2 ii = vec2(1.,0.)/size ;
+    vec2 jj = vec2(0.,1.)/size ;
+
+    // get fiber orientation at stagerred points .........................
+    vec2 f_ip = normalize(
+        0.5*(texture(ifiber, cc)+texture(ifiber,cc+ii)).xy ) ;
+    vec2 f_im = normalize(  
+        0.5*(texture(ifiber, cc)+texture(ifiber,cc-ii)).xy ) ;
+    vec2 f_jp = normalize(
+        0.5*(texture(ifiber, cc)+texture(ifiber,cc+jj)).xy ) ;
+    vec2 f_jm = normalize(
+        0.5*(texture(ifiber, cc)+texture(ifiber,cc-jj)).xy ) ;
+
+    // calculate diffusion tensor at stagerred points ....................
+    mat2 d_ip = getDiff(sigma_f, sigma_t, f_ip) ;
+    mat2 d_im = getDiff(sigma_f, sigma_t, f_im) ;
+    mat2 d_jp = getDiff(sigma_f, sigma_t, f_jp) ;
+    mat2 d_jm = getDiff(sigma_f, sigma_t, f_jm) ;
+
+    // calculate the spatial resolution ..................................
+    float dx    = lx/size.x ;
+    float odx   = size.x/lx ;
+    float odxs  = odx*odx ;
+    float omega = 1./3. ;
+
+    // calculate the laplacian term ......................................
+    vec4 center =V(cc) ;
+    vec4 lap =  
+        // delta_x ( D_xx delta_x V)
+        d_ip[0][0]*( V(cc+ii) - center     ) -
+        d_im[0][0]*( center   - V(cc-ii)   ) +
+        
+        // delta_x ( D_xy delta_y V)
+        d_ip[0][1]*0.25*(
+            V(cc+jj)+V(cc+ii+jj)-V(cc-jj)-V(cc+ii-jj)
+        ) -
+        d_im[0][1]*0.25*(
+            V(cc+jj)+V(cc-ii+jj)-V(cc-jj)-V(cc-ii-jj)
+        ) +
+        // delta_y ( D_yy delta_y V)
+        d_jp[1][1]*(V(cc+jj)-center) -
+        d_jm[1][1]*(center-V(cc-jj) )+
+
+        // delta_y (D_yx delta_x V)
+        d_jp[1][0]*0.25*(
+            V(cc+ii)-V(cc-ii)+V(cc+jj+ii)-V(cc+jj-ii)
+        ) - 
+        d_jm[1][0]*0.25*(
+            V(cc+ii)-V(cc-ii)+V(cc-jj+ii)-V(cc-jj-ii)
+        ) ;
+    
+    lap *= odxs ;
+
+    // Euler time-stepping ...............................................
+    ocolor = color + dt*lap*vltChannelMultiplier ;
+
+    return ;
+}
+</script><!-- end of cableAniso2D shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='cableAniso2DGeneral' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * cableAniso2DGeneral.frag     :    Anisotropic Cable Equation in General 
+ * tissue with a phase map and directional vectors
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Thu 30 Jan 2025 11:45:38 (EST)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+
+precision highp float;
+precision highp int ;
+precision highp sampler2D ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+in vec2 cc ;
+
+// interface variables ...................................................
+uniform sampler2D   vcolor ;                // laplacian is applied based
+                                            // on this texture
+uniform sampler2D   icolor ;                // texture of membrante
+                                            // potential. This will be the
+                                            // color that needs to be
+                                            // updated.
+
+uniform sampler2D   ifiber ;                // texture of fiber
+                                            // orientation
+                               
+uniform vec4        vltChannelMultiplier ;  // membrane potential channel
+                                            // multiplier
+
+uniform float       diffCoef ;              // diffusion coeficient
+uniform float       C_m ;                   // membrane capacitance
+uniform float       lx  ;                   // domain size in [cm]
+uniform float       dt ;                    // temporal res. in [ms]
+
+
+uniform sampler2D   iphase ;
+uniform usampler2D  idir0, idir1, idir2, idir3 ;
+
+// neighbor indices
+#define DIRJP       dir0.r  // north
+#define DIRJM       dir0.g  // south
+#define DIRIM       dir0.b  // west
+#define DIRIP       dir0.a  // east
+
+#define DIRIPJP     dir1.r  // north-east
+#define DIRIMJP     dir1.g  // north-west
+#define DIRIPJM     dir1.b  // south-east
+#define DIRIMJM     dir1.a  // south-west
+
+// sign of neighbor
+#define SODJP       dir2.r  // north
+#define SODJM       dir2.g  // south
+#define SODIM       dir2.b  // west
+#define SODIP       dir2.a  // east
+
+#define SODIPJP     dir3.r  // north-east
+#define SODIMJP     dir3.g  // north-west
+#define SODIPJM     dir3.b  // south-east
+#define SODIMJM     dir3.a  // south-west
+
+
+#define isInBounds(v)       (all(greaterThanEqual(v,ivec2(0))) &&\
+        all(lessThan(v,size)) )
+
+#define inDomain(v)         (texelFetch(iphase,ivec2(v),0).r>0.5) 
+#define isGood(v)           (inDomain(v) && isInBounds(v))
+#define isNotGood(v)        !isGood(v)
+
+/*========================================================================
+ * packing and unpacking two integers to and from a single unsigned int.
+ *========================================================================
+ */
+#define pack(a)   uint((uint((a).x)<<16)+uint((a).y))
+#define unpack(I)   ivec2(uint(I)>>16, uint(I) & uint(65535) )
+
+
+// output colors of the shader ...........................................
+layout (location = 0 ) out vec4 ocolor ;
+
+/*========================================================================
+ * getDiff: macro to calculate the diffusion tensor from the provided
+ * fiber orientation vector, f, and the conductivity along the fiber,
+ * sigma_f, and conductivity in the transverse direction, sigma_t.
+ *========================================================================
+ */
+// 3D version ............................................................
+//define getDiff(sigma_f, sigma_t,f) \
+//    (sigma_t)*mat3(1.)+((sigma_f)-(sigma_t))*outerProduct((f),(f))
+
+// 2D version ............................................................
+#define getDiff(sigma_f, sigma_t,f) \
+    (sigma_t)*mat2(1.)+((sigma_f)-(sigma_t))*outerProduct((f),(f))
+
+
+#define sgn(u)  (int(u)-2)
+#define V(pos)   texelFetch(vcolor, unpack(pos), 0)
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+
+    ivec2 size  = textureSize( icolor, 0 ) ;
+    ivec2 C     = ivec2( floor(cc*vec2(size)) ) ;
+
+    // read the value of the color at the center of texel ................
+    vec4 color = texelFetch( icolor , C, 0) ;
+
+    // return if the point is outside the domain .........................
+    ocolor = color ; 
+    if (!inDomain(C) ) return ;
+
+    // read directional vectors ..........................................
+    uvec4 dir0 = texelFetch( idir0 , C, 0 ) ;
+    uvec4 dir1 = texelFetch( idir1 , C, 0 ) ;
+    uvec4 dir2 = texelFetch( idir2 , C, 0 ) ;
+    uvec4 dir3 = texelFetch( idir3 , C, 0 ) ;
+
+    // sigma_f and sigma_t ...............................................
+    float sigma_f = diffCoef ;
+    float sigma_t = sigma_f*0.25 ;
+
+    // get fiber orientation at stagerred points .........................
+    vec2 f_c = texelFetch(ifiber, C, 0).xy ;
+
+
+    #define f_dir(S, D) \
+        normalize( f_c + \
+            0.5*(float(S)-2.)*(texelFetch(ifiber,unpack(D),0).xy-f_c) )
+
+    vec2 f_ip = f_dir(SODIP, DIRIP) ;
+    vec2 f_im = f_dir(SODIM, DIRIM) ;
+    vec2 f_jp = f_dir(SODJP, DIRJP) ;
+    vec2 f_jm = f_dir(SODJM, DIRJM) ;
+
+    // calculate diffusion tensor at stagerred points ....................
+    mat2 d_ip = getDiff(sigma_f, sigma_t, f_ip) ;
+    mat2 d_im = getDiff(sigma_f, sigma_t, f_im) ;
+    mat2 d_jp = getDiff(sigma_f, sigma_t, f_jp) ;
+    mat2 d_jm = getDiff(sigma_f, sigma_t, f_jm) ;
+
+    // calculate the spatial resolution ..................................
+    float dx    = lx/float(size.x) ;
+    float odx   = float(size.x)/lx ;
+    float odxs  = odx*odx ;
+    float omega = 1./3. ;
+
+    // calculate the laplacian term ......................................
+    vec4 center =texelFetch( vcolor, C, 0 ) ;
+    vec4 lap =  
+        // delta_x ( D_xx delta_x V)
+        d_ip[0][0]*( V(DIRIP) - center     ) -
+        d_im[0][0]*( center   - V(DIRIM)   ) +
+        
+        // delta_x ( D_xy delta_y V)
+        d_ip[0][1]*0.25*(
+            V(DIRJP)-V(DIRJM)+V(DIRIPJP)-V(DIRIPJM)
+        ) -
+        d_im[0][1]*0.25*(
+            V(DIRJP)-V(DIRJM)+V(DIRIMJP)-V(DIRIMJM)
+        ) +
+        // delta_y ( D_yy delta_y V)
+        d_jp[1][1]*(V(DIRJP)-center) -
+        d_jm[1][1]*(center-V(DIRJM) )+
+
+        // delta_y (D_yx delta_x V)
+        d_jp[1][0]*0.25*(
+            V(DIRIP)-V(DIRIM)+V(DIRIPJP)-V(DIRIMJP)
+        ) - 
+        d_jm[1][0]*0.25*(
+            V(DIRIP)-V(DIRIM)+V(DIRIPJM)-V(DIRIMJM)
+        ) ;
+    
+    lap *= odxs ;
+
+    // Euler time-stepping ...............................................
+    ocolor = color + dt*lap*vltChannelMultiplier ;
+
+    return ;
+}
+</script><!-- end of cableAniso2DGeneral shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='phaseInit2D' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * phaseInit2D.frag     :    initialize the domain phase function at
+ * statup.
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Tue 28 Jan 2025 16:00:10 (EST)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float;
+precision highp int ;
+precision highp sampler2D ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+// interfacial vars ......................................................
+in vec2 cc ;
+
+layout (location=0) out vec4 fphase ;
+layout (location=1) out vec4 sphase ;
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    vec4 phase = vec4(1.) ;
+
+    if (length(cc-vec2(0.5))>0.48){
+        phase = vec4(0.) ;
+    }
+
+    fphase = phase ;
+    sphase = phase ;
+    return ;
+}
+</script><!-- end of phaseInit2D shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='directionator2D' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * directionator2D.frag     :    a solver to create the directional
+ * indices map
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Wed 29 Jan 2025 09:38:22 (EST)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float;
+precision highp int ;
+precision highp sampler2D ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+// interfacial vars ......................................................
+in vec2 cc ;
+
+uniform sampler2D iphase ;
+
+// output colors .........................................................
+layout (location=0) out uvec4 odir0 ;
+layout (location=1) out uvec4 odir1 ;
+layout (location=2) out uvec4 odir2 ;
+layout (location=3) out uvec4 odir3 ;
+
+
+// neighbor indices
+#define DIRJP       dir0.r  // north
+#define DIRJM       dir0.g  // south
+#define DIRIM       dir0.b  // west
+#define DIRIP       dir0.a  // east
+
+#define DIRIPJP     dir1.r  // north-east
+#define DIRIMJP     dir1.g  // north-west
+#define DIRIPJM     dir1.b  // south-east
+#define DIRIMJM     dir1.a  // south-west
+
+// sign of neighbor
+#define SODJP       dir2.r  // north
+#define SODJM       dir2.g  // south
+#define SODIM       dir2.b  // west
+#define SODIP       dir2.a  // east
+
+#define SODIPJP     dir3.r  // north-east
+#define SODIMJP     dir3.g  // north-west
+#define SODIPJM     dir3.b  // south-east
+#define SODIMJM     dir3.a  // south-west
+
+
+#define isInBounds(v)       (all(greaterThanEqual(v,ivec2(0))) &&\
+        all(lessThan(v,size)) )
+
+#define inDomain(v)         (texelFetch(iphase,ivec2(v),0).r>0.5) 
+#define isGood(v)           (inDomain(v) && isInBounds(v))
+#define isNotGood(v)        !isGood(v)
+
+/*========================================================================
+ * packing and unpacking two integers to and from a single unsigned int.
+ *========================================================================
+ */
+#define pack(a)   uint((uint((a).x)<<16)+uint((a).y))
+#define unpack(I)   ivec2(uint(I)>>16, uint(I) & uint(65535) )
+
+
+/*========================================================================
+ * getPackedIndex 
+ *========================================================================
+ */
+void getPackedIndexAndSign( 
+        ivec2 C, ivec2 D, ivec2 size, 
+        out uint ch, out uint sgn){
+    ivec2 checkPoint = C+D ;
+
+    // the actual sign value will be obtained by subtracting 2 from the
+    // sgn value
+    sgn = 3u ; // +1 
+
+    if ( isNotGood(checkPoint) ){ /* if that direction is not good move in
+                                     the opposite direction */
+        checkPoint = C-D ;
+        sgn = 1u ;   // -1
+        if ( isNotGood( checkPoint ) ){ /* if the opposite direction is
+                                           not good either, use the
+                                           central point coordinate */
+            checkPoint = C ;
+            sgn = 2u ; // zero 
+        }
+    }
+
+    ch = uint(pack(checkPoint)) ;
+    return ;
+}
+
+#define setNeighbor( D, N, S ) getPackedIndexAndSign(C, D, size, N, S) ;
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    ivec2    size = textureSize(iphase, 0 ).xy ;
+    ivec2    C = ivec2( floor(cc*vec2(size)) ) ;
+
+    uvec4 dir0, dir1, dir2 ,dir3 ;
+    uvec2 temp ;
+
+    ivec2 ii = ivec2(1,0) ;
+    ivec2 jj = ivec2(0,1) ;
+
+    setNeighbor( ii,    DIRIP,      SODIP   ) ;
+    setNeighbor(-ii,    DIRIM,      SODIM   ) ;
+    setNeighbor( jj,    DIRJP,      SODJP   ) ;
+    setNeighbor(-jj,    DIRJM,      SODJM   ) ;
+
+    setNeighbor( ii+jj, DIRIPJP,    SODIPJP ) ;
+    setNeighbor(-ii+jj, DIRIMJP,    SODIMJP ) ;
+    setNeighbor( ii-jj, DIRIPJM,    SODIPJM ) ;
+    setNeighbor(-ii-jj, DIRIMJM,    SODIMJM ) ;
+
+    odir0 = dir0;
+    odir1 = dir1 ;
+    odir2 = dir2 ;
+    odir3 = dir3 ;
+    return ;
+}
+</script><!-- end of directionator2D shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='click' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * click.frag   : Create activations on the tissue
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Tue 22 Oct 2024 10:28:56 (EDT)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float;
+precision highp int ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+// interfacial variables .................................................
+in vec2 cc ;
+
+uniform sampler2D   icolor0 ;
+uniform vec2        clickPosition ;
+uniform float       radius ;
+uniform vec4        vltChannelMultiplier ;
+uniform float       exitationThreshold ;
+
+// output color ..........................................................
+layout (location = 0) out vec4 ocolor0 ;
+
+/*========================================================================
+ * main
+ *========================================================================
+ */
+void main(){
+    vec4 color0 = texture( icolor0 , cc ) ;
+
+    if (length(cc - clickPosition )<radius ){
+        color0 = color0*(vec4(1.) - vltChannelMultiplier) + 
+            vltChannelMultiplier*exitationThreshold ;
+    }
+
+    ocolor0 = vec4(color0) ;
+    return ;
+}
+</script><!-- end of click shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='channelSampler' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * channelSampler.frag  :   sample a particular channel from the input
+ *                          texture
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Fri 02 Sep 2022 14:22:27 (EDT)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float ;
+precision highp int ;
+precision highp sampler2D ;
+
+/*------------------------------------------------------------------------
+ * interface variables
+ *------------------------------------------------------------------------
+ */
+uniform sampler2D   itexture ;      // input texture 
+
+in vec2 cc ;                        // pixel coordinate
+
+/*------------------------------------------------------------------------
+ * output from the shader
+ *------------------------------------------------------------------------
+ */
+out vec4 ocolor ;                  // output sampled color channel
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    ocolor = texture(itexture, cc ) ; 
+}
+</script><!-- end of channelSampler shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='pacemaker' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * pacemakerShader.frag     :    pacemaker shader
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Thu 30 May 2024 12:29:01 (EDT)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float;
+precision highp int ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+uniform sampler2D icolor ;                  /* input texture            */
+
+uniform float   radius ;                    /* radius of the pacemaker  */
+uniform vec2    center ;                    /* center of the pacemaker  */
+
+uniform vec4    multiplier ;                /* determines which channel
+                                               to manipulate to pace    */
+
+uniform float   paceValue ;                 /* value to modify the
+                                               appropriate channel with */
+
+uniform bool    circular ;                  /* A pacemaker that has a
+                                               center and radius        */
+uniform bool    vertical ;                  /* A pacemaker that is not
+                                               circular, is either
+                                               horizontal or vertical   */
+
+in vec2 cc ;                                /* center coordinate of the
+                                               texel                    */
+
+layout (location = 0) out vec4 ocolor ;     /* output color             */
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    // reading the pixel value ...........................................
+    vec4 color = texture(icolor , cc) ;
+
+    // pace the target region ............................................
+    if (circular){
+        if (length(cc-center) < radius ){
+            color = paceValue*multiplier + (vec4(1.)-multiplier)*color ;
+        }
+    }else if (vertical){
+        if ( abs(cc.x-center.x)<radius ) {
+            color = paceValue*multiplier + (vec4(1.)-multiplier)*color ;
+        }
+    }else{
+        if ( abs(cc.y-center.y)<radius ) {
+            color = paceValue*multiplier + (vec4(1.)-multiplier)*color ;
+        }
+    }
+
+    // output color ......................................................
+    ocolor = color ;
+    return ;
+}
+</script><!-- end of pacemaker shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='reduceActiveColumns' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * reduceActiveColumns.frag     :    reduction operation to count the
+ * number of pixels in a column that are above a threshold.
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Fri 06 Sep 2024 14:26:42 (EDT)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float;
+precision highp int ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+/*------------------------------------------------------------------------
+ * interface variables
+ *------------------------------------------------------------------------
+ */
+uniform float       activityThreshold ;
+uniform sampler2D   icolor ;
+
+in vec2 cc ;
+
+/*------------------------------------------------------------------------
+ * output of the shader
+ *------------------------------------------------------------------------
+ */
+out vec4 ocolor ;
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    ivec2 size = textureSize( icolor, 0) ; /* size of the input texture */
+    float count ;                          /* number of cells above the
+                                              threshold in each column of
+                                              the texture */
+    
+    // loop over the elements of column to count the pixels above a
+    // certain threshold .................................................
+    for(int j = 0 ; j< size.y ; j+=1){
+        count += (texture(icolor, 
+            vec2(cc.x, (float(j)+0.5)/float(size.y))).r 
+                            > activityThreshold) ?          1.:0. ;
+    }
+
+    // output the count in each column as the color ......................
+    ocolor = vec4(count) ;
+}
+</script><!-- end of reduceActiveColumns shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='reduceActiveRows' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * reduceActiveRows.frag    :    2nd step of the reduction operation
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Fri 06 Sep 2024 15:32:16 (EDT)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float;
+precision highp int ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+/*------------------------------------------------------------------------
+ * interface variables (uniforms)
+ *------------------------------------------------------------------------
+ */
+uniform sampler2D icolor ; /* input texture: this texture is the result of
+                              the first pass of the reduction operator.
+                              This texture should contain the result of
+                              number of active cells in each column of the
+                              texture. */
+
+/*------------------------------------------------------------------------
+ * output of the shader
+ *------------------------------------------------------------------------
+ */
+out vec4 ocolor ; /* output color of the shader: number of active cells 
+                     in the domain. */
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    ivec2 size  = textureSize(icolor, 0) ; /* size of the input texture */
+    float sum   = 0. ; /* sum of the number of active cells */
+   
+    /* looping over all the column results to find the total number of
+     * active cells in the domain. */
+    for(int i=0 ; i<size.x; i+=1){
+        sum += texture(icolor, vec2((float(i)+0.5)/float(size.x),0.5)).r ;
+    }
+
+    /* output of the shader */
+    ocolor = vec4(sum) ;
+}
+</script><!-- end of reduceActiveRows shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='mmm-init' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * mmm-init.frag   : initialize color-sets for MM model   
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Wed 15 Nov 2023 08:50:32 (EST)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+
+precision highp float;
+precision highp int ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+// interface variables ...................................................
+in vec2 cc ;
+
+// variable macros .......................................................
+#define u       color0.r
+#define v       color0.g
+#define w       color0.b
+#define s       color0.a
+
+
+// color outputs .........................................................
+layout (location = 0) out vec4 ocolor0 ; 
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    // color declarations ................................................
+    vec4 color0;
+
+    // init vars .........................................................
+    u = 0. ;
+    v = 1. ;
+    w = 1. ;
+    s = 0.03 ;
+
+    // output colors .....................................................
+    ocolor0 = vec4(color0 ) ;
+
+    return ;
+}
+</script><!-- end of mmm-init shader's source code -->
+
+<!-- ***************************************************************** -->
+<script id='mmm-comp' type='x-shader-fragment'>#version 300 es
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * mmm-comp.frag : March Master MM model for one time-step
+ * 
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Wed 15 Nov 2023 08:50:47 (EST)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+precision highp float;
+precision highp int ;
+precision highp isampler2D ;
+precision highp usampler2D ;
+
+
+in vec2 cc  ;
+
+/*========================================================================
+ * Comp Uniforms
+ *========================================================================
+ */
+uniform sampler2D   icolor0 ;
+
+uniform float   dt ;        /* time step                */
+uniform float   C_m ;
+uniform float   stimulus_1 ;
+uniform float   stimulus_1_x ;
+uniform float   stimulus_1_y ;
+uniform float   stimulus_1_radius ;
+uniform float   stimulus_2 ;
+uniform float   stimulus_2_x ;
+uniform float   stimulus_2_y ;
+uniform float   stimulus_2_radius ;
+uniform bool    stimulus_active ;
+
+uniform float   tau_m_v1    , tau_m_v2    , tau_p_v     , 
+                tau_m_w1    , tau_m_w2    , tau_p_w1    , 
+                tau_p_w2    , tau_s1      , tau_s2      , 
+                tau_fi      , tau_o1      , tau_o2      , 
+                tau_so1     , tau_so2     , tau_si1     , 
+                tau_si2     , tau_winf    , theta_v     , 
+                theta_p_v   , theta_m_v   , theta_vinf  , 
+                theta_w     , theta_winf  , theta_so    , 
+                theta_si    , theta_p_si  , theta_si_c  , 
+                theta_s     , theta_o     , k_m_w       , 
+                k_p_w       , k_s         , k_so        , 
+                k_si        , k_si1       , k_si2       , 
+                k_si_c      , u_m_w       , u_s         , 
+                u_o         , u_u         , u_so        , 
+                w_sinf      , w_p_c       , s_c         , 
+                alpha_w     , alpha_si    , beta_v      , 
+                gamma_si    , delta_w     , u_p_w  ;
+
+/*========================================================================
+ * Hyperbolic tangent 
+ *========================================================================
+ */
+float Tanh(float x){
+    if ( x<-3.0){
+        return -1.0 ;
+    } else if (x>3.0){
+        return 1.0 ;
+    } else {
+        return x*(27.0 + x*x)/(27.0+9.0*x*x) ;
+    }
+}
+
+/*========================================================================
+ * Variable map
+ *========================================================================
+ */
+#define u       color0.r
+#define v       color0.g
+#define w       color0.b
+#define s       color0.a
+
+
+// color outputs .........................................................
+layout (location = 0) out vec4 ocolor0 ;
+
+/*========================================================================
+ * main body of the shader
+ *========================================================================
+ */
+void main(){
+    // localizing color values ...........................................
+    vec4 color0  = texture(icolor0 , cc ) ;
+
+    // step functions ....................................................
+    float  H_theta_v       = ( u > theta_v     )  ? 1.0:0.0 ;
+    float  H_theta_m_v     = ( u > theta_m_v   )  ? 1.0:0.0 ;
+    float  H_theta_w       = ( u > theta_w     )  ? 1.0:0.0 ;
+    float  H_theta_so      = ( u > theta_so    )  ? 1.0:0.0 ;
+    float  H_theta_si      = ( u > theta_si    )  ? 1.0:0.0 ;
+    float  H_theta_s       = ( u > theta_s     )  ? 1.0:0.0 ;
+    float  H_theta_o       = ( u > theta_o     )  ? 1.0:0.0 ;
+    float  H_theta_vinf    = ( u > theta_vinf  )  ? 1.0:0.0 ;
+    float  H_theta_winf    = ( u > theta_winf  )  ? 1.0:0.0 ;
+
+    // RHS Variables .....................................................
+    float tau_m_v = ( 1.0 - H_theta_m_v )*tau_m_v1 
+                    + H_theta_m_v*tau_m_v2 ;
+    float tau_m_w = tau_m_w1 
+        + (tau_m_w2-tau_m_w1)*(1.+Tanh(k_m_w*(u-u_m_w)))*0.5 ;
+    float  tau_p_w = tau_p_w1 
+        + (tau_p_w2-tau_p_w1)*(1.+Tanh(k_p_w*(
+                        delta_w*(w-w_p_c) + (1.-delta_w)*(u-u_p_w))))*0.5 ;
+    float tau_s   = (1. - H_theta_s)*tau_s1 + H_theta_s*tau_s2 ;
+    float tau_o   = (1. - H_theta_o)*tau_o1 + H_theta_o*tau_o2 ;
+    float tau_so  = tau_so1 
+        + (tau_so2 - tau_so1)*(1.+Tanh(k_so*(u-u_so)))*0.5 ;
+    float  tau_si  = tau_si1 
+        + (tau_si2 - tau_si1)*(1.+Tanh(k_si*(s-s_c)))*0.5 ;
+    float  tau_p_si = alpha_si*(1.+exp(k_si1*(u-theta_p_si)))/
+        (1.-Tanh(k_si2*(u-theta_p_si))) ;
+
+    float v_inf = 1. - H_theta_vinf ;
+    float w_inf = (1.-H_theta_winf)*(1.-u/tau_winf) 
+            + H_theta_winf*w_sinf ;
+
+    // dv/dt .............................................................
+    float  dv2dt   =   (1.-H_theta_v)*(v_inf - v)/tau_m_v 
+                    -   H_theta_v * v /tau_p_v ;
+
+    // dw/dt .............................................................
+    /* wx = w^alpha_w  and alpha_w is an integer */
+    float wx = w ;
+    for(int i=1; i < int(round(alpha_w)) ; i++){
+        wx *= w ;
+    }
+    
+    float dw2dt    = (1.-H_theta_w)*(w_inf-wx)/tau_m_w
+                    - H_theta_w*w/tau_p_w ; 
+
+    // ds/dt .............................................................
+    float   ds2dt   = ((1.+tanh(k_s*(u-u_s)))*0.5-s)/tau_s ;
+
+    // currents ..........................................................
+    float  J_fi    = -v*H_theta_v*(u-theta_p_v)*(u_u - u )/tau_fi ;
+    float  J_so    = (u - u_o)*(1.-H_theta_so)*(1.-beta_v*v)/tau_o
+                    + H_theta_so/tau_so ;
+    float  J_si ;  
+    if (gamma_si > 0.5) 
+        J_si = -H_theta_si*w*s/tau_si ;
+    else
+        J_si = -(1.+tanh(k_si_c*(u-theta_si_c)))*w/tau_p_si ;
+
+    J_si = (u<0.05) ? 0. : J_si ;
+
+    float I_stim_1 = 0. ;
+    float I_stim_2 = 0. ;
+    if (length(cc-vec2(stimulus_1_x,stimulus_1_y))<stimulus_1_radius){
+        I_stim_1 = -stimulus_1 ;
+    }
+
+    if (length(cc-vec2(stimulus_2_x,stimulus_2_y))<stimulus_2_radius){
+        I_stim_2 = -stimulus_2 ;
+    }
+
+    float  I_sum   = J_fi + J_so + J_si+(I_stim_1 + I_stim_2)*float(stimulus_active)  ;
+
+    // du/dt .............................................................
+    float du2dt = -I_sum/C_m ;
+
+    // Euler time-stepping ...............................................
+    u += du2dt*dt ;
+    v += dv2dt*dt ;
+    w += dw2dt*dt ;
+    s += ds2dt*dt ;
+
+    // outputting colors .................................................
+    ocolor0 = vec4(color0) ;
+
+    return ;
+}
+</script><!-- end of mmm-comp shader's source code -->
+
+
+<!--&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+<!-- main script - JavaScript code                                     -->
+<!--&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
+<script>
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * app.js       : A generalized model loader
+ *
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Sat 09 Nov 2024 20:31:55 (EST)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+"use strict" ;
+
+/*========================================================================
+ * get the source code for fragment shaders
+ *========================================================================
+ */
+function source( id ){
+    return document.getElementById( id ).innerHTML ;
+}
+/*========================================================================
+ * Global Parameters
+ *========================================================================
+ */
+let env = {} ;
+
+/*========================================================================
+ * channelMultiplier
+ *========================================================================
+ */
+function channelMultiplier(channel){
+    let mult = {
+        r : [1,0,0,0] ,
+        g : [0,1,0,0] ,
+        b : [0,0,1,0] ,
+        a : [0,0,0,1] ,
+    } ;
+    let c = channel.toLowerCase()[0] ;
+    let m  ;
+    try{
+        m = mult[c] ;
+    }catch(e){
+        console.log(e) ;
+    }
+    if (m == undefined){
+        throw('Invalid color channel') ;
+    }
+    return m ;
+}
+
+
+/*========================================================================
+ * import surface data
+ *========================================================================
+ */
+let loadedJSON ;
+
+/*========================================================================
+ * let the user select the file
+ *========================================================================
+ */
+//var fileInput = document.getElementById('json_structure') ;
+//
+//fileInput.onchange = function(){
+//  let file = fileInput.files[0] ;
+//  if ( !file ){
+//      return ;
+//  }
+//  let reader = new FileReader() ;
+//  reader.readAsText(file) ;
+//
+//  reader.onload = function(e){
+//      let result = e.target.result ;
+//      loadedJSON = JSON.parse(result) ;
+//      $('#chooser').hide() ;
+//      $('.loaded').show() ;
+//      loadWebGL() ;
+//  } ;
+//}
+
+var gl = Abubu.gl ;
+
+/*========================================================================
+ * Initialization of the GPU and Container
+ *========================================================================
+ */
+function loadWebGL()
+{
+    env.allFloats   = [] ; // uniform shared floats
+    env.allInts     = [] ; // uniform shared integers
+    env.allTxtrs    = [] ; // uniform shared textures
+            
+/*------------------------------------------------------------------------
+ * Initiate all coeficients 
+ *------------------------------------------------------------------------
+ */
+    env.running     = false ;
+    env.skip        = 20 ;
+    env.time        = 0. ;
+    env.counter     = 0 ;
+    
+    // model params
+    env._dt         = 0.05 ;    /* time step size       */
+    env._C_m        = 1. ;      /* cell conductance     */
+    env.lx          = 8.  ;     /* domain size          */
+    env.diffCoef    = 1.e-3 ;   /* diffusion coeficient */
+
+    env.timesteppingParams = [ 'dt' , 'C_m' ] ;
+    env.cableParams        = [ 'lx', 'diffCoef' ] ;
+
+/*========================================================================
+ * dt 
+ *========================================================================
+ */
+    Object.defineProperty( env, 'dt',{
+        get :()=>{
+            return env._dt ;
+        } ,
+        set :(x)=>{
+            env._dt = x ;
+            if( env.model?.dtUpdateCallback ){
+                env.model.dtUpdateCallback() 
+            }
+            env.pacemaker_s1.dt = x ;
+            env.pacemaker_s2.dt = x ;
+            return ;
+        }, 
+    } ) ;
+
+/*========================================================================
+ * C_m
+ *========================================================================
+ */
+    Object.defineProperty( env, 'C_m',{
+        get :()=>{
+            return env._C_m ;
+        } ,
+        set :(x)=>{
+            env._C_m = x ;
+            if( env.model?.C_mUpdateCallback ){
+                env.model.C_mUpdateCallback() 
+            }
+            return ;
+        }, 
+    } ) ;
+
+/*========================================================================
+ * Model definitions go here
+ *========================================================================
+ */
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * mmm-model.js  :  All 4V Master MM model Details will be saved here.
+ *
+ * PROGRAMMER   : ABOUZAR KABOUDIAN
+ * DATE         : Tue 14 Nov 2023 21:27:03 (EST)
+ * PLACE        : Maryland, USA.
+ *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
+let mmm = {} ;
+
+/*------------------------------------------------------------------------
+ * Model name and other info
+ *------------------------------------------------------------------------
+ */
+mmm.info = {
+    name        : '4V Master Minimal-Model' ,
+    shortname   : '4V MMM' ,
+    otherInfo   : '' ,
+}
+
+/*------------------------------------------------------------------------
+ * Texture requirements
+ *
+ * COMPULSORY
+ *------------------------------------------------------------------------
+ */
+mmm.noTextures      = 1 ;   // number of textures
+                            
+mmm.vlt = {                  // membrane potential info
+    textureNo : 0,          // texture number.
+    channel   : 'r' ,       // color channel of vlt
+    min       : 0.,         // minimum val
+    max       : 1.5 ,       // maximum val
+    rest      : 0. ,        // resting potential
+    noDiv     : 15 ,        // no. of division on signal plot
+    excite    : 0.9,        // exitation threshold
+    unit      : '',
+    precision : 1 ,
+} ;
+
+/*------------------------------------------------------------------------
+ * variables to load from env variable if no variable is loaded from
+ * environment keep the following array empty.
+ *
+ * COMPULSORY
+ *------------------------------------------------------------------------
+ */
+mmm.fromEnv = ['C_m','dt'] ; // uniforms from the env variable
+/* to check if fromEnv includes varName use:
+ * mmm.fromEnv.includes(varName) 
+ * it will return true if the array contains the member.
+ */
+
+mmm.overwrites = ['diffCoef'] ; 
+// overwriting the values in the env
+                     // environmental variable
+
+/*------------------------------------------------------------------------
+ * Stimulus Strengths
+ *------------------------------------------------------------------------
+ */
+mmm.stimulus_1          = 0.05 ; 
+mmm.stimulus_1_x        = 0.1 ;
+mmm.stimulus_1_y        = 0.5 ;
+mmm.stimulus_1_radius   = 0.05 ;
+mmm.stimulus_2          = 0.95 ;
+mmm.stimulus_2_x        = 0.8 ;
+mmm.stimulus_2_y        = 0.5 ;
+mmm.stimulus_2_radius   = 0.1 ; 
+
+mmm.stimulus_floats = [
+    'stimulus_1' ,      
+    'stimulus_1_x' ,      
+    'stimulus_1_y' ,      
+    'stimulus_1_radius',  
+    'stimulus_2' ,       
+    'stimulus_2_x',      
+    'stimulus_2_y' ,     
+    'stimulus_2_radius' ];
+
+mmm.stimulus_active = true ;
+
+mmm.floats = [...mmm.stimulus_floats] ;
+
+/*------------------------------------------------------------------------
+ * Model Specific Uniforms
+ *------------------------------------------------------------------------
+ */
+// CytoD params
+
+mmm.taus = [
+    'tau_m_v1'      ,   'tau_m_v2'      ,   'tau_p_v'       ,
+    'tau_m_w1'      ,   'tau_m_w2'      ,   'tau_p_w1'      ,
+    'tau_p_w2'      ,   'tau_s1'        ,   'tau_s2'        ,
+    'tau_fi'        ,   'tau_o1'        ,   'tau_o2'        ,
+    'tau_so1'       ,   'tau_so2'       ,   'tau_si1'       ,
+    'tau_si2'       ,   'tau_winf' 
+] ;
+
+mmm.thetas = [
+                                            'theta_v'       ,
+    'theta_p_v'     ,   'theta_m_v'     ,   'theta_vinf'    ,
+    'theta_w'       ,   'theta_winf'    ,   'theta_so'      ,
+    'theta_si'      ,   'theta_p_si'    ,   'theta_si_c'    ,
+    'theta_s'       ,   'theta_o' 
+] ;
+
+mmm.ks = [
+                                            'k_m_w'         ,
+    'k_p_w'         ,   'k_s'           ,   'k_so'          ,
+    'k_si'          ,   'k_si1'         ,   'k_si2'         ,
+    'k_si_c' 
+] ;
+
+mmm.us = [
+                        'u_m_w'         ,   'u_s'           ,
+    'u_o'           ,   'u_u'           ,   'u_so'          ,
+] ;
+
+mmm.others = [
+    'w_sinf'        ,   'w_p_c'         ,   's_c'           ,
+    'alpha_w'       ,   'alpha_si'      ,   'beta_v'        ,
+    'gamma_si'      ,   'delta_w'       ,   'u_p_w'  ,
+] ;
+
+mmm.modelParams = [ 
+    ...mmm.taus,...mmm.thetas,...mmm.ks,...mmm.us,...mmm.others,...mmm.overwrites
+] ;
+
+
+mmm.VariableSet= 'Human Epi' ;
+mmm.Set_01_3V = [
+    19.6,       1000,   3.33,   11,     11,     667,    
+    667,        1,      1,      0.42,   8.3,    8.3,    
+    50, 50,     45,     45,     1,      0.13,   
+    0.13,       0.055,  10,     0.13,   0,      0.13,   
+    0,  0,      0.85,   0,      0,      1,      
+    1,  0,      1,      0,      0,      0,      
+    10, 0,      0,      0,      1,      0,      
+    1,  0,      0,      1,      45,     0,      
+    0,  0,      0,      ] ;
+mmm.Set_02_3V = [
+    10, 10,     10,     11,     11,     667,    
+    667,        1,      1,      0.25,   10,     10,     
+    190,        190,    45,     45,     1,      0.13,   
+    0.13,       0.055,  10,     0.13,   0,      0.13,   
+    0,  0,      0.85,   0,      0,      1,      
+    1,  0,      1,      0,      0,      0,      
+    10, 0,      0,      0,      1,      0,      
+    1,  0,      0,      1,      1000000,        
+    0,  0,      0,      0,      ] ;
+mmm.Set_03_3V = [
+    19.6,       1250,   3.33,   41,     41,     870,    
+    870,        1,      1,      0.25,   12.5,   12.5,   
+    33.33,      33.33,  29,     29,     1,      0.13,   
+    0.13,       0.04,   10,     0.13,   0,      0.13,   
+    0,  0,      0.85,   0,      0,      1,      
+    1,  0,      1,      0,      0,      0,      
+    10, 0,      0,      0,      1,      0,      
+    1,  0,      0,      1,      29,     0,      
+    0,  0,      0,      ] ;
+mmm.Set_04_3V = [
+    15.6,       5,      3.33,   80,     80,     350,    
+    350,        1,      1,      0.407,  9,      9,      
+    34, 34,     26.5,   26.5,   1,      0.15,   
+    0.15,       0.04,   10,     0.15,   0,      0.15,   
+    0,  0,      0.45,   0,      0,      1,      
+    1,  0,      1,      0,      0,      0,      
+    15, 0,      0,      0,      1,      0,      
+    1,  0,      0,      1,      26.5,   0,      
+    0,  0,      0,      ] ;
+mmm.Set_05_3V = [
+    12, 2,      3.33,   100,    100,    1000,   
+    1000,       1,      1,      0.362,  5,      
+    5,  33.33,  33.33,  29,     29,     1,      
+    0.13,       0.13,   0.04,   10,     0.13,   
+    0,  0.13,   0,      0,      0.7,    0,      
+    0,  1,      1,      0,      1,      0,      
+    0,  0,      15,     0,      0,      0,      
+    1,  0,      1,      0,      0,      1,      
+    29, 0,      0,      0,      0,      ] ;
+mmm.Set_06_3V = [
+    9,  8,      3.33,   60,     60,     250,    
+    250,        1,      1,      0.395,  9,      
+    9,  33.33,  33.33,  29,     29,     1,      
+    0.13,       0.13,   0.04,   10,     0.13,   
+    0,  0.13,   0,      0,      0.5,    0,      
+    0,  1,      1,      0,      1,      0,      
+    0,  0,      15,     0,      0,      0,      
+    1,  0,      1,      0,      0,      1,      
+    29, 0,      0,      0,      0,      ] ;
+mmm.Set_07_3V = [
+    7,  7,      10,     60,     60,     250,    
+    250,        1,      1,      0.25,   12,     
+    12, 100,    100,    29,     29,     1,      
+    0.13,       0.13,   0.04,   10,     0.13,   
+    0,  0.13,   0,      0,      0.5,    0,      
+    0,  1,      1,      0,      1,      0,      
+    0,  0,      15,     0,      0,      0,      
+    1,  0,      1,      0,      0,      1,      
+    1000000,    0,      0,      0,      0,      ] ;
+mmm.Set_08_3V = [
+    19.6,       1250,   13.03,  40,     40,     
+    800,        800,    1,      1,      0.45,   
+    12.5,       12.5,   33.25,  33.25,  29,     
+    29, 1,      0.13,   0.13,   0.04,   10,     
+    0.13,       0,      0.13,   0,      0,      
+    0.85,       0,      0,      1,      1,      
+    0,  1,      0,      0,      0,      10,     
+    0,  0,      0,      1,      0,      1,      
+    0,  0,      1,      29,     0,      0,      
+    0,  0,      ] ;
+mmm.Set_09_3V = [
+    15, 2,      3.33,   61,     61,     670,    
+    670,        1,      1,      0.25,   12.5,   
+    12.5,       28,     28,     29,     29,     
+    1,  0.13,   0.13,   0.05,   10,     0.13,   
+    0,  0.13,   0,      0,      0.45,   0,      
+    0,  1,      1,      0,      1,      0,      
+    0,  0,      10,     0,      0,      0,      
+    1,  0,      1,      0,      0,      1,      
+    29, 0,      0,      0,      0,      ] ;
+mmm.Set_10_3V = [
+    40, 333,    10,     65,     65,     1000,   
+    1000,       1,      1,      0.115,  12.5,   
+    12.5,       25,     25,     22.22,  22.22,  
+    1,  0.13,   0.13,   0.025,  10,     0.13,   
+    0,  0.13,   0,      0,      0.85,   0,      
+    0,  1,      1,      0,      1,      0,      
+    0,  0,      10,     0,      0,      0,      
+    1,  0,      1,      0,      0,      1,      
+    22.22,      0,      0,      0,      0,      ] ;
+
+mmm.human_epi =  [      60.0      , 1150      , 1.4506  , 
+                        60.0      , 15        , 200.0   , 
+                        200.0     , 2.7342    , 16.0    , 
+                        0.11      , 400.      , 6.0     , 
+                        30.0181   , 0.9957    , 1.8875  , 
+                        1.8875    , 0.07      , 0.3     ,
+                        0.3       , 0.006     , 0.006   , 
+                        0.13      , 0.13      , 0.13    , 
+                        0.13      , 0.13      , 0.13    , 
+                        0.13      , 0.006     , 65.0    , 
+                        1.0       , 2.0994    , 2.0458  , 
+                        1.0       , 1.0       , 1.0     , 
+                        1.0       , 0.03      , 0.9087  , 
+                        0.0       , 1.55      , 0.65    , 
+                        0.94      , 1.0       , 1.0     , 
+                        1.0       , 1.0       , 0.0     , 
+                        1.0       , 1.0       , 1.0     ,
+                        1.e-3 ] ;
+
+mmm.new_brugada = [     60        , 50        , 1.4506  , 
+                        60        , 15        , 0.050082, 
+                        131.5     , 2.7342    , 35      , 
+                        0.04      , 400       , 6       , 
+                        30.0181   , 0.9957    , 7.5476  , 
+                        1.8875    , 0.07      , 0.3     , 
+                        0.3       , 0.006     , 2       , 
+                        0.13      , 0.13      , 0.13    , 
+                        0.13      , 0.13      , 0.13    , 
+                        0.13      , 0.006     , 65      , 
+                        5.7       , 5.8       , 2.0458  , 
+                        97.8      , 1         , 1       , 
+                        1         , 0.03      , 0.35    , 
+                        0         , 1         , 0.65    , 
+                        0.94      , 0.15      , 0.71752 , 
+                        1.0       , 1.0       , 0.0     , 
+                        1.0       , 1.0       , 1.0     , 
+                        1.e-3 ] ;
+
+mmm.map_brugada = [     15.06     , 15        , 3.33      , 
+                        300       , 300       , 25.41     , 
+                        226.2     , 4.242     , 25.21     , 
+                        0.05      , 8.854     , 8.854     , 
+                        193.9     , 0.5640    , 5.834     , 
+                        0.1567    , 0.07      , 0.13      , 
+                        0.13      , 0.955     , 2         , 
+                        0.08801   , 0         , 0.2564    , 
+                        0         , 1         , 1         , 
+                        0.3602    , 0.955     , 65        , 
+                        6.199     , 4.825     , 3.135     , 
+                        4.732     , 1         , 1         , 
+                        1         , 0.03      , 0.4363    , 
+                        0         , 0.6       , 0.11      , 
+                        1         , 0.464     , 0.6419    , 
+                        1         , 1         , 0         , 
+                        1         , 1.0       , 1.0       , 
+                        1.e-3 ] ;
+
+mmm.epi = [             60        , 1150      , 1.4506    , 
+                        60        , 15        , 200       , 
+                        200       , 2.7342    , 16        , 
+                        0.11      , 400       , 6         , 
+                        30.0181   , 0.9957    , 1.8875    , 
+                        1.8875    , 0.07      , 0.3       , 
+                        0.3       , 0.006     , 0.006     , 
+                        0.13      , 0.006     , 0.13      , 
+                        0.13      , 1         , 1         , 
+                        0.13      , 0.006     , 65        , 
+                        65        , 2.0994    , 2.0458    , 
+                        1         , 1         , 1         , 
+                        1         , 0.03      , 0.9087    , 
+                        0         , 1.55      , 0.65      , 
+                        0.94      , 0         , 0         , 
+                        1         , 1         , 0         , 
+                        1         , 1.0       , 1.0       , 
+                        1.e-3 ] ;
+
+mmm.endo = [            75        , 10        , 1.4506    , 
+                        6         , 140       , 280       , 
+                        280       , 2.7342    , 2         , 
+                        0.1       , 470       , 6         , 
+                        40        , 1.2       , 2.9013    , 
+                        2.9013    , 0.0273    , 0.3       , 
+                        0.3       , 0.2       , 0.2       , 
+                        0.13      , 0.006     , 0.13      , 
+                        0.13      , 1         , 1         , 
+                        0.13      , 0.006     , 200       , 
+                        200       , 2.0994    , 2         , 
+                        1         , 1         , 1         , 
+                        1         , 0.016     , 0.9087    , 
+                        0         , 1.56      , 0.65      , 
+                        0.78      , 0         , 0         , 
+                        1         , 1         , 0         , 
+                        1         , 1.0       , 1.0       , 
+                        1.e-3 ] ;
+
+mmm.mid_myo = [         80        , 1.4506    , 1.4506    , 
+                        70        , 8         , 280       , 
+                        280       , 2.7342    , 4         , 
+                        0.078     , 410       , 7         , 
+                        91        , 0.8       , 3.3849    , 
+                        3.3849    , 0.01      , 0.3       , 
+                        0.3       , 0.1       , 0.1       , 
+                        0.13      , 0.005     , 0.13      , 
+                        0.13      , 1         , 1         , 
+                        0.13      , 0.005     , 200       , 
+                        200       , 2.0994    , 2.1       , 
+                        1         , 1         , 1         , 
+                        1         , 0.016     , 0.9087    , 
+                        0         , 1.61      , 0.6       , 
+                        0.5       , 0         , 0         , 
+                        1         , 1         , 0         , 
+                        1         , 1.0       , 1.0       , 
+                        1.e-3 ] ;
+
+mmm.pb = [              10        , 1150      , 1.4506    , 
+                        140       , 6.25      , 326       , 
+                        326       , 2.7342    , 16        , 
+                        0.105     , 400       , 6         , 
+                        30.0181   , 0.9957    , 1.8875    , 
+                        1.8875    , 0.175     , 0.35      , 
+                        0.35      , 0.175     , 0.175     , 
+                        0.13      , 0.006     , 0.13      , 
+                        0.13      , 1         , 1         , 
+                        0.13      , 0.006     , 65        , 
+                        65        , 2.0994    , 2.0458    , 
+                        1         , 1         , 1         , 
+                        1         , 0.015     , 0.9087    , 
+                        0         , 1.45      , 0.65      ,
+                        0.9       , 0         , 0         , 
+                        1         , 1         , 0         , 
+                        1         , 1.0       , 1.0       ,  
+                        1.e-3 ] ;
+
+mmm.tnnp = [            60        , 1150      , 1.4506    , 
+                        70        , 20        , 280       , 
+                        280       , 2.7342    , 3         , 
+                        0.11      , 6         , 6         , 
+                        43        , 0.2       , 2.8723    , 
+                        2.8723    , 0.07      , 0.3       , 
+                        0.3       , 0.015     , 0.015     , 
+                        0.015     , 0.006     , 0.015     , 
+                        0.015     , 1         , 1         , 
+                        0.015     , 0.006     , 65        , 
+                        65        , 2.0994    , 2         , 
+                        1         , 1         , 1         , 
+                        1         , 0.03      , 0.9087    , 
+                        0         , 1.58      , 0.65      , 
+                        0.94      , 0         , 0         , 
+                        1         , 1         , 0         , 
+                        1         , 1.0       , 1.0       , 
+                        1.e-3 ] ;
+
+mmm.atrial_p1 = [       57.12      , 1012     , 2.189      , 
+                        68.50      , 68.50    , 871.4      , 
+                        871.4      , 1.7570   , 1.110      , 
+                        0.12990    , 15.17    , 15.17      , 
+                        72.66      , 7.933    , 40.11      , 
+                        40.11      , 1.       , 0.23       , 
+                        0.23       , 0.3085   , 2.         , 
+                        0.2635     , -1.      , 0.1313     , 
+                        -1.        , 0.       , 0.         , 
+                        0.05766    , 0.       , 0.         , 
+                        0.         , 6.043    , 2.592      , 
+                        0.         , 0.       , 0.         , 
+                        0.         , 0.       , 0.1995     , 
+                        0.         , 1.       , 0.4804     , 
+                        1.         , 1.       , 0.         , 
+                        1.         , 1.       , 0.         , 
+                        1.         , 1.0      , 1.0        ,
+                        1.611e-3 ] ;
+
+mmm.atrial_p1_alt = [   46.77      , 1321     , 1.759      , 
+                        80.18      , 80.18    , 749.5      , 
+                        749.5      , 1.983    , 1.484      , 
+                        0.08673    , 17.05    , 17.05      , 
+                        54.90      , 1.685    , 38.82      , 
+                        38.82      , 1.       , 0.23       , 
+                        0.23       , 0.1142   , 2.         , 
+                        0.2508     , -1.      , 0.2171     , 
+                        -1.        , 0.       , 0.         , 
+                        0.1428     , 0.       , 0.         , 
+                        0.         , 21.62    , 2.161      , 
+                        0.         , 0.       , 0.         , 
+                        0.         , 0.       , 0.2168     , 
+                        0.         , 1.       , 0.6520     , 
+                        1.         , 1.       , 0.         , 
+                        1.         , 1.       , 0.         , 
+                        1.         , 1.0      , 1.0        ,
+                        1.337e-3 ] ;
+
+mmm.atrial_p2 = [       40.31      , 1183     , 1.349      , 
+                        89.08      , 89.08    , 777.0      , 
+                        777.0      , 1.086    , 1.144      , 
+                        0.04456    , 23.45    , 23.45      , 
+                        97.89      , 3.308    , 36.60      , 
+                        36.60      , 1.       , 0.23       , 
+                        0.23       , 0.1799   , 2.         , 
+                        0.2566     , -1.      , 0.2579     , 
+                        -1.        , 0.       , 0.         , 
+                        0.1943     , 0.       , 0.         , 
+                        0.         , 6.142    , 1.997      , 
+                        0.         , 0.       , 0.         , 
+                        0.         , 0.       , 0.2722     , 
+                        0.         , 1.       , 0.4185     , 
+                        1.         , 1.       , 0.         , 
+                        1.         , 1.       , 0.         , 
+                        1.         , 1.0      , 1.0        ,
+                        1.405e-3 ] ;
+
+mmm.atrial_p3 = [       35.75      , 1187     , 1.247   , 
+                        109.8      , 109.8    , 751.8   , 
+                        751.8      , 2.241    , 1.487   , 
+                        0.0688     , 18.31    , 18.31   , 
+                        54.43      , 4.894    , 40.39   , 
+                        40.39      , 1.       , 0.23    , 
+                        0.23       , 0.1107   , 2.      , 
+                        0.2798     , -1.      , 0.2131  , 
+                        -1.        , 0.       , 0.      , 
+                        0.1601     , 0.       , 0.      , 
+                        0.         , 8.679    , 2.187   , 
+                        0.         , 0.       , 0.      , 
+                        0.         , 0.       , 0.2097  , 
+                        0.         , 1.       , 0.6804  , 
+                        1.         , 1.       , 0.      , 
+                        1.         , 1.       , 0.      , 
+                        1.         , 1.0      , 1.0     , 
+                        1.704e-3 ] ;
+
+mmm.atrial_p4 = [       971.3      , 120.5      , 2.243      , 
+                        110.7      , 110.7      , 616.0      , 
+                        616.0      , 7.104E-03  , 16.29      , 
+                        0.08511    , 6.754      , 6.754      , 
+                        152.9      , 19.82      , 18.94      , 
+                        18.94      , 1.         , 0.23       , 
+                        0.23       , 0.03489    , 2.         , 
+                        0.1788     , -1.        , 0.2069     , 
+                        -1.        , 0.         , 0.         , 
+                        3.140E-04  , 0.         , 0.         , 
+                        0.         , 8.958      , 8.677      , 
+                        0.         , 0.         , 0.         , 
+                        0.         , 0.         , 0.1682     , 
+                        0.         , 1.         , 6.013E-03  , 
+                        1.         , 1.         , 0.         , 
+                        1.         , 1.         , 0.         , 
+                        1.         , 1.0        , 1.0        ,
+                        2.696e-3 ] ;
+mmm.atrial_p5 = [       45.15    , 1166     , 2.194    , 
+                        166.4    , 166.4    , 836.3    , 
+                        836.3    , 0.764    , 1.315    , 
+                        0.06711  , 18.28    , 18.28    , 
+                        105.4    , 3.264    , 39.23    , 
+                        39.23    , 1.       , 0.23     , 
+                        0.23     , 0.1382   , 2.       , 
+                        0.2589   , -1.      , 0.2588   , 
+                        -1.      , 0.       , 0.       , 
+                        0.1797   , 0.       , 0.       , 
+                        0.       , 7.351    , 1.968    , 
+                        0.       , 0.       , 0.       , 
+                        0.       , 0.       , 0.2023   , 
+                        0.       , 1.       , 0.3497   , 
+                        1.       , 1.       , 0.       , 
+                        1.       , 1.       , 0.       , 
+                        1.       , 1.0      , 1.0      ,
+                        8.479e-4 ] ;
+
+mmm.atrial_original = [ 19.60    , 1250     , 3.330    , 
+                        41.00    , 41.00    , 870.0    , 
+                        870.0    , 1.000    , 1.000    , 
+                        0.2500   , 12.50    , 12.50    , 
+                        33.30    , 33.30    , 29.00    , 
+                        29.00    , 1.       , 0.23     , 
+                        0.23     , 0.04000  , 2.       , 
+                        0.1300   , -1.      , 0.1300   , 
+                        -1.      , 0.       , 0.       , 
+                        0.1300   , 0.       , 0.       , 
+                        0.       , 10.00    , 10.00    , 
+                        0.       , 0.       , 0.       , 
+                        0.       , 0.       , 0.8500   , 
+                        0.       , 1.       , 0.8500   , 
+                        1.       , 1.       , 0.       , 
+                        1.       , 1.       , 0.       , 
+                        1.       , 1.0      , 1.0      , 
+                        1.e-3 ] ;
+
+mmm.rabbit_cytod = [    15.2     , 100.     , 3.33     , 
+                        55.0     , 55.0     , 382.     , 
+                        382.     , 1.       , 1.       , 
+                        .075     , 8.3      , 8.3      , 
+                        50.5     , 50.5     , 1.       , 
+                        1.       , 1.       , .25      , 
+                        .25      , .05      , 2.       , 
+                        .25      , -1.      , .25      , 
+                        0.       , 0.       , .4       , 
+                        0.       , 0.       , 0.       , 
+                        0.       , 0.       , 0.       , 
+                        0.       , 0.       , 0.       , 
+                        10.      , 0.       , 0.       , 
+                        0.       , 1.0      , 0.       , 
+                        1.       , 0.       , 0.       , 
+                        1.       , 45.      , 0.       , 
+                        0.       , 1.0      , 1.0      , 
+                        1.e-3 ] ;
+
+mmm.rabbit_dam  = [     28.0     , 100.     , 3.33     , 
+                        98.      , 98.      , 615.     , 
+                        615.     , 1.       , 1.       , 
+                        .0942    , 8.3      , 8.3      , 
+                        50.5     , 50.5     , 1.       , 
+                        1.       , 1.       , .25      , 
+                        .25      , .05      , 2.       , 
+                        .25      , -1.      , .25      , 
+                        0.       , 0.       , .7       , 
+                        0.       , 0.       , 0.       , 
+                        0.       , 0.       , 0.       , 
+                        0.       , 0.       , 0.       , 
+                        10.      , 0.       , 0.       , 
+                        0.       , 1.       , 0.       , 
+                        1.       , 0.       , 0.       , 
+                        1.       , 48.      , 0.       , 
+                        0.       , 1.0      , 1.0      , 
+                        1.e-3 ] ;
+
+mmm.pig_ventricle = [   40.0     , 2000.0   , 10.0     , 
+                        305.0    , 305.0    , 320.0    , 
+                        320.0    , 1.0      , 1.0      , 
+                        0.175    , 4.5      , 4.5      , 
+                        5.0      , 35.0     , 1.0      , 
+                        1.0      , 1.0      , 0.25     , 
+                        0.1      , 0.0025   , 2.00     , 
+                        0.25     , -1.0     , 0.25     , 
+                        2.0      , 0.9      , 0.35     , 
+                        0.0      , 0.0      , 0.0      , 
+                        0.0      , 0.0      , -50.0     , 
+                        0.0      , 4.5      , 10.0     , 
+                        7.0      , 0.0      , 0.0      , 
+                        0.0      , 0.97     , 0.85     , 
+                        1.0      , 0.0      , 0.0      , 
+                        4.0      , 62.0     , 1.0      , 
+                        0.0      , 1.0      , 1.0      , 
+                        1.e-3 ] ;
+
+mmm.canine_epi_37 = [   20       , 1150     , 1.4506   , 
+                        120      , 300      , 120      , 
+                        140      , 2.7342   , 16       , 
+                        0.11     , 400      , 6        , 
+                        30.0181  , 0.9957   , 1.8875   , 
+                        1.8875   , 0.07     , 0.3      , 
+                        0.3      , 0.006    , 0.006    , 
+                        0.13     , 0.006    , 0.13     , 
+                        0.13     , 0        , 0        , 
+                        0.13     , 0.006    , 65       , 
+                        5.7      , 2.0994   , 2.0458   , 
+                        0        , 0        , 0        , 
+                        0        , 0.03     , 0.9087   , 
+                        0        , 1.55     , 0.65     , 
+                        0.94     , 0        , 0        , 
+                        1        , 1        , 0        , 
+                        1        , 0        , 0.15     , 
+                        1.e-3 ] ;
+
+mmm.canine_endo_37 = [  55       , 40       , 1.4506   , 
+                        40       , 115      , 175      , 
+                        230      , 2.7342   , 2        , 
+                        0.10     , 470      , 6        , 
+                        40       , 1.2      , 2.9013   , 
+                        2.9013   , 0.0273   , 0.3      , 
+                        0.3      , 0.2      , 0.2      , 
+                        0.13     , 0.006    , 0.13     , 
+                        0.13     , 0        , 0        , 
+                        0.13     , 0.006    , 20       , 
+                        8        , 2.0994   , 2        , 
+                        0        , 0        , 0        , 
+                        0        , 0.00615  , 0.9087   , 
+                        0        , 1.56     , 0.65     , 
+                        0.78     , 0        , 0        , 
+                        1        , 1        , 0        , 
+                        1        , 0        , 0.0005   , 
+                        1.e-3 ] ;
+
+mmm.canine_epi_26 = [   10       , 1150     , 1.4506   , 
+                        75       , 90       , 90       , 
+                        140      , 2.7342   , 16       , 
+                        0.11     , 400      , 6        , 
+                        30.0181  , 0.9957   , 1.8875   , 
+                        1.8875   , 0.07     , 0.3      , 
+                        0.3      , 0.006    , 0.006    , 
+                        0.13     , 0.006    , 0.13     , 
+                        0.13     , 0        , 0        , 
+                        0.13     , 0.006    , 65       , 
+                        6.5      , 2.0994   , 2.0458   , 
+                        0        , 0        , 0        , 
+                        0        , 0.02     , 0.9087   , 
+                        0        , 1.55     , 0.65     , 
+                        0.94     , 0        , 0        , 
+                        1        , 1        , 0        , 
+                        1        , 0        , 0.8      , 
+                        1.e-3 ] ;
+
+mmm.canine_endo_26 = [  15       , 40       , 1.4506   , 
+                        40       , 165      , 175      , 
+                        150      , 2.7342   , 2        , 
+                        0.10     , 470      , 6        , 
+                        40       , 1.2      , 2.9013   , 
+                        2.9013   , 0.0273   , 0.3      , 
+                        0.3      , 0.2      , 0.2      , 
+                        0.13     , 0.006    , 0.13     , 
+                        0.13     , 0        , 0        ,
+                        0.13     , 0.006    , 8000     , 
+                        8        , 2.0994   , 2        , 
+                        0        , 0        , 0        , 
+                        0        , 0.005    , 0.9087   , 
+                        0        , 1.56     , 0.65     , 
+                        0.78     , 0        , 0        , 
+                        1        , 1        , 0        , 
+                        1        , 0        , 0.0005   , 
+                        1.e-3 ] ;
+
+// set initial value of params to human_epi
+for(let i in mmm.modelParams ){
+    let vname = mmm.modelParams[i] ;
+    mmm[vname] = mmm.human_epi[i] ;
+}
+
+mmm.floats = [...mmm.floats,...mmm.fromEnv,...mmm.modelParams ] ;
+
+
+/*------------------------------------------------------------------------
+ * Array of `comutate` solvers that are used for time-stepping
+ * 
+ * COMPULSORY
+ *------------------------------------------------------------------------
+ */
+mmm.compute = [
+    { 
+        fragmentShader: source('mmm-comp') ,
+                                        // source code for the fragment
+                                        // shader
+
+        prevInputTextures : _.range(1), // input texture numbers to the
+                                        // shader from prev time-step
+
+        currInputTextures : [] ,        // textures that are already
+                                        // updated in the current
+                                        // time-step. This array is
+                                        // non-empty when there are
+                                        // multiple solvers associated
+                                        // with model. 
+
+        targets : _.range(1) ,          // output colors of the shader
+
+        uniforms : {                    // uniforms to be passed to the
+                                        // shader. These uniforms can
+                                        // generally be controlled from
+                                        // the GUI
+                                        //
+                                        // The key should be the type of
+                                        // the uniform and the array the
+                                        // name of the uniform that should
+                                        // be searched in the model for
+                                        // the value
+
+            f : [...mmm.floats] ,       // floats
+            b : ['stimulus_active']
+        }
+    } ,
+] ;
+
+/*------------------------------------------------------------------------
+ * initial condition shaders array
+ *
+ * COMPULSORY
+ *------------------------------------------------------------------------
+ */
+mmm.initialize = [
+    {
+        fragmentShader: source('mmm-init') , // source code of the fragment
+                                            // shader
+
+        targets: _.range(1) ,               // array of targets that the
+                                            // shader initializes
+    }
+] ;
+
+/*------------------------------------------------------------------------
+ * GUI Control
+ *------------------------------------------------------------------------
+ */
+mmm.guiGeneral= [
+{
+    type  : 'dropdown',
+    options: [ 
+        "Set_01_3V" ,"Set_02_3V" ,"Set_03_3V" ,"Set_04_3V" ,"Set_05_3V" ,"Set_06_3V" ,"Set_07_3V" ,"Set_08_3V" ,"Set_09_3V" ,"Set_10_3V" ,
+        'Human Epi', 
+        'New Brugada',      'MAP Brugada' ,
+        'Epi',              'Endo',             'Mid Myo', 
+        'PB',               'TNNP' ,
+        'Atrial P1',        'Atrial P1-Alt', 
+        'Atrial P2',        'Atrial P3',
+        'Atrial P4',        'Atrial P5' ,       'Atrial Original' ,
+        'Rabbit CytoD',     'Rabbit Dam',
+        'Pig Ventriles' ,
+        'Canine Epi-37' ,   'Canine Endo-37', 
+        'Canine Epi-26',    'Canine Endo-26' 
+    ],
+    solvers: { compute: [0] , initialize: [] } ,
+    name : 'VariableSet' ,
+    controls : mmm.modelParams ,
+    values : [
+        mmm.Set_01_3V, mmm.Set_02_3V, mmm.Set_03_3V,
+        mmm.Set_04_3V, mmm.Set_05_3V, mmm.Set_06_3V,
+        mmm.Set_07_3V, mmm.Set_08_3V, mmm.Set_09_3V,mmm.Set_10_3V,
+        mmm.human_epi,
+        mmm.new_brugada,    mmm.map_brugada,
+        mmm.epi,            mmm.endo,               mmm.mid_myo ,
+        mmm.pb,             mmm.tnnp,
+        mmm.atrial_p1,      mmm.atrial_p1_alt,
+        mmm.atrial_p2,      mmm.atrial_p3,
+        mmm.atrial_p4,      mmm.atrial_p5,          mmm.atrial_original,
+        mmm.rabbit_cytod,   mmm.rabbit_dam,
+        mmm.pig_ventricle,
+        mmm.canine_epi_37,  mmm.canine_endo_37,
+        mmm.canine_epi_26,  mmm.canine_endo_26
+    ] ,
+} ,
+] ;
+
+mmm.guiGroups = {
+    stimulation : [
+        {
+            names : mmm.stimulus_floats ,
+            solvers : {compute : [0], initialize: []} ,
+            type: 'numbers' ,
+        }
+    ] ,
+    taus : [
+        {
+            names: mmm.taus ,
+            solvers: { compute: [0] , initialize: [] } ,
+            type : 'numbers' ,
+        }
+    ] ,
+    thetas: [
+        {
+            names: mmm.thetas ,
+            solvers: { compute: [0] , initialize: [] } ,
+            type : 'numbers' ,
+        }
+
+    ] ,
+    ks: [
+        {
+            names: mmm.ks ,
+            solvers: { compute: [0] , initialize: [] } ,
+            type : 'numbers' ,
+        }
+
+    ] ,
+    us: [
+        {
+            names: mmm.us ,
+            solvers: { compute: [0] , initialize: [] } ,
+            type : 'numbers' ,
+        }
+
+    ],
+    others: [
+        {
+            names: mmm.others ,
+            solvers: { compute: [0] , initialize: [] } ,
+            type : 'numbers' ,
+        }
+    ]
+} ;
+
+                          
+/*------------------------------------------------------------------------
+ * FIXME: initializing the model: this part should and will be replaced 
+ * when we start adding more models to the program.
+ *------------------------------------------------------------------------
+ */
+    env.models = {
+        //  value:  model_name_in_js_file    
+        MMM         : mmm ,
+    } ;
+
+    /* Using the radio-button implementation */
+    // Get the value of the selected radio button
+    /* let selectedModel = document
+        .querySelector('input[name="models"]:checked').id; */
+    let selectedModel = 'MMM' ;
+    /* let selectedSpatialTerm = document
+        .querySelector('input[name="spatial"]:checked').id; */
+
+    let selectedSpatialTerm = 'Iso2D' ;
+
+    env.selectedModel = selectedModel ;
+    env.selectedSpatialTerm = selectedSpatialTerm ;
+
+    //env.shape = document.querySelector('input[name="shape"]:checked').id ;
+    env.shape = 'rectangular' ;
+    // Assign the selected model
+    env.model = env.models[selectedModel];
+    let model = env.model;
+    
+    // Update the UI with the model information
+    //document.getElementById('ModelName').innerHTML = model.info.name;
+    document.title = model.info.shortname;
+    
+    // Hide model choice and show the loaded model
+    //$("#PrerunChoices").hide();
+    //$("#LoadedModel").css('visibility','visible');
+    
+    
+/*------------------------------------------------------------------------
+ * display parameters
+ *------------------------------------------------------------------------
+ */
+    env.colormap    = 'rainbowHotSpring' ;
+    env.dispWidth   = 512 ;
+    env.dispHeight  = 512 ;
+
+    env.canvas_1 = document.getElementById("canvas_1") ;
+    env.canvas_2 = document.getElementById("canvas_2") ;
+    env.canvas_1.width  = env.dispWidth ;
+    env.canvas_1.height = env.dispHeight ;
+
+    env.width   = 512 ;
+    env.height  = 512 ;
+
+/*------------------------------------------------------------------------
+ * textures for time-stepping
+ *------------------------------------------------------------------------
+ */
+    env.fcolors = [] ;
+    env.scolors = [] ;
+
+    for(let i=0; i< model.noTextures ; i++){
+        env['fcolor'+i] = new Abubu.Float32Texture( 
+                env.width, env.height, { pairable : true } ) ;
+        env['scolor'+i] = new Abubu.Float32Texture( 
+                env.width, env.height, { pairable : true } ) ;
+        env.fcolors.push(env['fcolor'+i]) ;
+        env.scolors.push(env['scolor'+i]) ;
+    }
+    env.colors = [ ...env.fcolors, ...env.scolors ] ;
+
+    // voltage colors for operator splitting
+    env.fvcolor = new Abubu.Float32Texture( 
+                env.width, env.height, { pairable : true } ) ;
+
+    env.svcolor = new Abubu.Float32Texture( 
+                env.width, env.height, { pairable : true } ) ;
+
+/*------------------------------------------------------------------------
+ * Copy vltTextures to vcolor textures
+ *------------------------------------------------------------------------
+ */
+    env.fcopy = new Abubu.Copy(
+            env['fcolor'+model.vlt.textureNo], 
+            env.fvcolor) ;
+    env.scopy = new Abubu.Copy(
+            env['scolor'+model.vlt.textureNo], 
+            env.fvcolor) ;
+
+/*------------------------------------------------------------------------
+ * Define phase and direction maps 
+ *------------------------------------------------------------------------
+ */
+    if (env.shape == 'general'){
+        env.fphase = new Abubu.Float32Texture(env.width, env.height) ;
+        env.sphase = new Abubu.Float32Texture(env.width, env.height) ;
+        
+        // directions map textures
+        env.dir0 = new Abubu.Uint32Texture(env.width, env.height, {pairable : true }) ;
+        env.dir1 = new Abubu.Uint32Texture(env.width, env.height) ;
+        
+        env.dir2 = new Abubu.Uint32Texture(env.width, env.height) ;
+        env.dir3 = new Abubu.Uint32Texture(env.width, env.height) ;
+
+
+        env.phaseInit2D = new Abubu.Solver({
+            fragmentShader: source("phaseInit2D") ,
+            uniforms : {} ,
+            targets : {
+                fphase : { location: 0 , target: env.fphase } ,
+                sphase : { location: 1 , target: env.sphase } ,
+            }
+        } ) ;
+        env.phaseInit2D.render() ;
+
+        env.directionator2D = new Abubu.Solver( {
+            fragmentShader : source( "directionator2D" ) ,
+            uniforms : { 
+                iphase : { type : 't', value: env.fphase } ,
+            } ,
+            targets : {
+                dir0 : { location : 0, target : env.dir0 } ,
+                dir1 : { location : 1, target : env.dir1 } ,
+                dir2 : { location : 2, target : env.dir2 } ,
+                dir3 : { location : 3, target : env.dir3 } ,
+            }
+        } ) ;
+
+        env.directionator2D.render() ;
+    }
+
+/*------------------------------------------------------------------------
+ * fiber orientation
+ *------------------------------------------------------------------------
+ */
+    // fibers texture ....................................................
+    env.fibers = new Abubu.Float32Texture(
+            env.width, env.height, { pairable : true } ) ;
+
+    // prescribe fibers solver ...........................................
+    env.prescribe2DFibers = new Abubu.Solver({
+        fragmentShader: source('prescribe2DFibers') ,
+        targets:{
+            ocolor : { location : 0, target: env.fibers } 
+        }
+    } ) ;
+    env.prescribe2DFibers.render() ;
+
+/*------------------------------------------------------------------------
+ * cable equation step
+ *------------------------------------------------------------------------
+ */
+    function cableShaderSource(opts){
+        let shape = '' ;
+        if (env.shape == 'general') 
+            shape = 'General' ;
+        return source('cable'+env.selectedSpatialTerm+shape) ;
+    }
+
+    class CableUniforms{
+        constructor(opts={} ){
+            this.vcolor = { type : 't', value: opts?.vcolor } ;
+            this.icolor = { type : 't', value: opts?.icolor } ;
+            this.vltChannelMultiplier = {
+                type : 'v4', 
+                value: channelMultiplier(env.model.vlt.channel) ,
+            }
+            this.diffCoef = { type : 'f', value : env.diffCoef  } ;
+            this.C_m      = { type : 'f', value : env.C_m       } ;
+            this.lx       = { type : 'f', value : env.lx        } ;
+            this.dt       = { type : 'f', value : env.dt        } ;
+
+
+            let noDims     = opts?.noDims ?? 2 ;
+            let anisotropy = opts?.anisotropy ?? 'Iso' ;
+            if (env.selectedSpatialTerm == 'Aniso2D' ){
+                this.ifiber ={ type : 't', value : env.fibers   } ;
+            }
+
+            if (env.shape == 'general' && noDims == 2 ){
+                for(let i=0; i<4; i++){
+                    this['idir'+i] = { type : 't', value: env['dir'+i] } ;
+                }
+                this.iphase = { type : 't', value : env.fphase } ;
+            }
+        }
+    }
+
+    // Iso2D .............................................................
+    env.fcable = new Abubu.Solver({
+        fragmentShader: cableShaderSource() ,
+        uniforms : new CableUniforms( {
+            vcolor : env.fvcolor , 
+            icolor : env['scolor'+env.model.vlt.textureNo ] ,
+        } ) ,
+        targets :{
+            ocolor : { location : 0, target : env.svcolor } ,
+        }
+    } ) ;
+    
+    env.scable = new Abubu.Solver({
+        fragmentShader: cableShaderSource() ,
+        uniforms : new CableUniforms( {
+            vcolor : env.svcolor , 
+            icolor : env['fcolor'+env.model.vlt.textureNo ] ,
+        } ) ,
+        targets :{
+            ocolor : { location : 0, target : env.fvcolor } ,
+        }
+    } ) ;
+
+    env.timesteppingSolvers = [env.fcable, env.scable] ;
+
+/*------------------------------------------------------------------------
+ * Setting up initializer 
+ *------------------------------------------------------------------------
+ */
+    let noInitSolvers = model.initialize.length ;
+    
+    // loop to define all model `initialize` solvers .....................
+    for(let i=0 ; i<noInitSolvers; i++){
+        let sinfo = model.initialize[i] ;
+
+        // loop to create 'f' and 's' sinitializers
+        for(let ord of ['f','s'] ){
+            let isinfo ={} ; // solver input
+            isinfo.fragmentShader = sinfo.fragmentShader ;
+            
+            // setting targets
+            isinfo.targets = {} ;
+            for(let ti=0; ti< sinfo.targets.length; ti++){
+                isinfo.targets['ocolor'+ti] = { location: ti,
+                    target : env[ord+'color'+sinfo.targets[ti]] } ;
+            }
+            isinfo.uniforms = {} ;
+            if (sinfo.uniforms != undefined ){
+                for(let u of Object.keys(sinfo.uniforms) ){
+                    for(let k=0; k<sinfo.uniforms[u].length; k++){
+                        let uname = sinfo.uniforms[u][k] ;
+                        if (env.model.fromEnv.includes(uname)){
+                            isinfo.uniforms[uname] = {
+                                type : u ,
+                                value : env[uname] } ;
+                        }else{
+                            isinfo.uniforms[uname] = {
+                                type : u ,
+                                value : env.model[uname] } ;
+                        }// end of else
+
+                    } // end of for(k<model.uniforms[u].length
+                }// end of for (u)
+            }
+
+            env[ord+'initialize'+i] = new Abubu.Solver(isinfo) ;
+        }// end of for(ord)
+    } // end of for(i)
+    
+    // initialize model state ............................................
+    env.initStates = function(){
+        for(let ord of ['f','s']){
+            for(let i=0; i<env.model.initialize.length;i++){
+                env[ord+'initialize'+i].render() ;
+            }
+            env[ord+'copy'].render() ;
+        }
+        return ;
+    }
+
+/*------------------------------------------------------------------------
+ * setting up marching states
+ *------------------------------------------------------------------------
+ */
+    let noCompute = env.model.compute.length ;
+    
+    let seq = [['f','s'],['s','f']] ;
+
+    for(let i=0; i<noCompute ; i++){
+        let sinfo = env.model.compute[i] ;
+
+        for(let j=0; j<2 ;j++){
+            let csinfo = {} ;
+            let cseq = seq[j] ;
+            csinfo.fragmentShader = sinfo.fragmentShader ;
+            
+            // setting up render targets .................................
+            csinfo.targets = {} ;
+            for(let k=0; k<sinfo.targets.length ; k++){
+                csinfo.targets['ocolor'+k] = {
+                    location: k, 
+                    target  : env[cseq[1]+'color'+sinfo.targets[k]] ,
+                } ;
+            }
+
+            // setting up uniforms .......................................
+            csinfo.uniforms = {} ;
+            
+            // prev. time-step textures
+            for(let k=0; k<sinfo.prevInputTextures.length ; k++){
+                let tNo =sinfo.prevInputTextures[k] ;
+                if (tNo != env.model.vlt.textureNo ){
+                    csinfo.uniforms['icolor'+tNo] = {
+                        type :'t', 
+                        value : env[cseq[0]+'color'+tNo] 
+                    } ;
+                }else{
+                    csinfo.uniforms['icolor'+tNo] = {
+                        type :'t', 
+                        value : env[cseq[0]+'vcolor'] 
+                    } ;
+                }
+            }
+            
+            // curr. time-step textures
+            for(let k=0; k<sinfo.currInputTextures.length ; k++){
+                let tNo =sinfo.currInputTextures[k] ;
+                if (tNo != env.model.vlt.textureNo ){
+                    csinfo.uniforms['icolor'+tNo] = {
+                        type :'t', 
+                        value : env[cseq[1]+'color'+tNo] 
+                    } ;
+                }else{
+                    csinfo.uniforms['icolor'+tNo] = {
+                        type :'t', 
+                        value : env[cseq[0]+'vcolor'] 
+                    } ;
+                }
+            }
+
+            for(let u of Object.keys(sinfo.uniforms) ){
+                for(let k=0; k<sinfo.uniforms[u].length; k++){
+                    let uname = sinfo.uniforms[u][k] ;
+                    if (env.model.fromEnv.includes(uname)){
+                        csinfo.uniforms[uname] = {
+                            type : u ,
+                            value : env[uname] } ;
+                    }else{
+                        csinfo.uniforms[uname] = {
+                            type : u ,
+                            value : env.model[uname] } ;
+                    }// end of else
+
+                } // end of for(k<model.uniforms[u].length
+            }// end of for (u)
+
+            env[cseq[0]+'compute'+i] = new Abubu.Solver(csinfo) ;
+            env.timesteppingSolvers.push(env[cseq[0]+'compute'+i]) ;
+        } // end of for(j<2)
+    }// end of for(i<noComputes)
+  
+    env.stimulationTime = 0. ;
+    env.stimulate = function(){
+        env.stimulationTime = 0. ;
+        env.fcompute0.uniforms.stimulus_active.value = true ;
+        env.scompute0.uniforms.stimulus_active.value = true ;
+        env.model.stimulus_active = true ;  
+        return ;
+    }
+
+    // marches the solution for two time steps ...........................
+    env.march = async function(){
+        for(let ord of ['f', 's']){
+            for(let i in env.model.compute ){
+                env[ord+'compute'+i].render() ;
+            }
+            env[ord+'cable'].render() ;
+        }
+        env.counter+=2 ; 
+        env.time = env.counter*env.dt ;
+        env.stimulationTime += env.dt*2 ;
+        if (env.stimulationTime >20. & env.model.stimulus_active){
+            env.fcompute0.uniforms.stimulus_active.value = false ;
+            env.scompute0.uniforms.stimulus_active.value = false ;
+            env.model.stimulus_active = false ;
+        }
+    } ;
+
+/*========================================================================
+ * Click
+ *========================================================================
+ */
+    env.click = new Abubu.Solver({
+        fragmentShader : source( 'click' ) ,
+        uniforms : {
+            icolor0 : { type : 't', 
+                value : env['fcolor'+env.model.vlt.textureNo ]      } ,
+            vltChannelMultiplier: { type : 'v4', 
+                value : channelMultiplier(env.model.vlt.channel)    } ,
+            exitationThreshold : { type : 'f', value : env.model.vlt.excite   } ,
+            
+            clickPosition :{ type: 'v2', value : [0,0] } ,
+            radius     : { type : 'f', value : 0.05 } ,
+        } ,
+        targets : {
+            ocolor4 : { location : 0 , 
+                target : env['scolor'+env.model.vlt.textureNo ] } ,
+        }
+    } ) ;
+
+    Object.defineProperty( env.click, 'radius' ,{
+        get : function(){
+            return this.uniforms.radius.value ;
+        } ,
+        set : function(x){
+            this.uniforms.radius.value = x ;
+        }
+    } ) ;
+
+    Object.defineProperty( env.click, 'exitationThreshold' ,{
+        get : function(){
+            return this.uniforms.exitationThreshold.value ;
+        } ,
+        set : function(x){
+            this.uniforms.exitationThreshold.value = x ;
+        }
+    } ) ;
+
+    env.clickCopy = new Abubu.Copy( env['scolor'+env.model.vlt.textureNo] , 
+            env['fcolor'+env.model.vlt.textureNo]  ) ;
+    
+    env.mouseDrag = new Abubu.MouseListener({
+        canvas : canvas_1 ,
+        event : 'drag' ,
+        callback : function(e){
+            env.click.uniforms.clickPosition.value = e.position ;
+            env.click.render() ;
+            env.clickCopy.render() ;
+            env.fcopy.render() ;
+            env.scopy.render() ;
+        } 
+    } ) ;
+
+/*========================================================================
+ * pacemaker
+ *========================================================================
+ */
+    // pacemaker s1 ......................................................
+    env.pacemaker_s1 = new Pacemaker(
+        env['fcolor'+ env.model.vlt.textureNo] , 
+        env['scolor'+ env.model.vlt.textureNo] ,
+        {
+            period  : 1000 ,
+            active  : false ,
+            circular: true ,
+            vertical: true ,
+            paceAtInit: true ,
+            channel : env.model.vlt.channel ,
+            radius  : 0.1 ,
+            value   : env.model.vlt.excite ,
+            x       : 0 ,
+            y       : 0 ,
+            dt      : env.dt ,
+            callback: ()=>{
+                env.fcopy.render() ;
+                env.scopy.render() ;
+            }
+        }
+    ) ;
+
+    // pacemaker s2 ......................................................
+    env.pacemaker_s2 = new Pacemaker(
+        env['fcolor'+ env.model.vlt.textureNo] , 
+        env['scolor'+ env.model.vlt.textureNo] ,
+        {
+            period  : 1000 ,
+            active  : false ,
+            circular: true ,
+            vertical: true ,
+            paceAtInit: true ,
+            channel : env.model.vlt.channel ,
+            radius  : 0.1 ,
+            value   : env.model.vlt.excite ,
+            x       : 0 ,
+            y       : 0 ,
+            dt      : env.dt ,
+            callback: ()=>{
+                env.fcopy.render() ;
+                env.scopy.render() ;
+            }
+        }
+    ) ;
+
+
+/*========================================================================
+ * colorplot
+ *========================================================================
+ */
+    env.tipTrajectory = new class{
+        constructor(){
+            this._visible = false ;
+            this._threshold = 0.3 ;
+        }
+        get visible(){
+            return this._visible ;
+        }
+        set visible(nv){
+            this._visible = nv ;
+            env.colorplot.setTiptVisiblity( this.visible ) ;
+        }
+        get threshold(){
+            return this._threshold ;
+        }
+        set threshold(nv){
+            this._threshold =  nv ;
+            env.colorplot.setTiptThreshold( this.threshold ) ;
+        }
+    }() ;
+   
+    if (env.shape != 'general' ){
+        env.colorplot = new Abubu.Plot2D( {
+            target          : env['fcolor'+env.model.vlt.textureNo] ,
+            prevTarget      : env['scolor'+env.model.vlt.textureNo] ,
+            tiptThreshold   : env.tipTrajectory.threshold ,
+            tiptThickness   : 4,
+            channel         : env.model.vlt.channel ,
+            minValue        : env.model.vlt.min ,
+            maxValue        : env.model.vlt.max ,
+            canvas          : env.canvas_1,
+            colorbar        : true ,
+        } ) ;
+    }else{
+        env.colorplot = new Abubu.Plot2D( {
+            target          : env['fcolor'+env.model.vlt.textureNo] ,
+            prevTarget      : env['scolor'+env.model.vlt.textureNo] ,
+            phaseField      : env.fphase,
+            tiptThreshold   : env.tipTrajectory.threshold ,
+            tiptThickness   : 4,
+            channel         : env.model.vlt.channel ,
+            minValue        : env.model.vlt.min ,
+            maxValue        : env.model.vlt.max ,
+            canvas          : env.canvas_1,
+            colorbar        : true ,
+        } ) ;
+    }
+
+        
+    env.mh = 0.05 ;
+    env.colorplot.status = env.colorplot.addMessage('Paused!',0.5,env.mh , 
+        { 
+            font : "14pt Times" ,
+            style: '#000', 
+            align: "left"
+        }
+    ) ;
+    env.colorplot.addMessage('Time = ',0.05,env.mh , 
+        { 
+            font : "14pt Times" ,
+            style: "#000", 
+            align: "left"
+        }
+    ) ;
+
+    env.colorplot.time = env.colorplot.addMessage( '0.00 [ms]', 0.40,env.mh , 
+        { 
+            font : "14pt Times" ,
+            style: "#000", 
+            align: "right"
+        }
+    ) ;
+    env.colorplot.init() ;
+
+/*========================================================================
+ * signal plot 
+ *========================================================================
+ */
+    // signal plot .......................................................
+    env.signalplot = new Abubu.SignalPlot({
+        noPltPoints : 1024,
+        grid : 'on',
+        nx : 5,
+        ny : env.model.vlt.noDiv, 
+        xticks : { mode: 'auto', unit : 'ms', font : '11pt Times'} ,
+        yticks : { mode: 'auto', precision:env.model.vlt.precision, unit : env.model.vlt.unit, font : '11pt Times'} ,
+        canvas : env.canvas_2 
+    } ) ;
+
+    env.voltageSignal = env.signalplot.addSignal( 
+            env['fcolor'+env.model.vlt.textureNo],{
+        channel : env.model.vlt.channel , 
+        minValue : env.model.vlt.min ,
+        maxValue : env.model.vlt.max ,
+        color :[0.5,0.,0.] ,
+        restValue : env.model.vlt.rest ,
+        visible : true ,
+        linewidth : 3,
+        timeWindow: 1000 ,
+        probePosition : [0.5,0.5] ,
+    }) ;
+
+    env.display = function(){
+        env.colorplot.time.text = env.time.toFixed(2) + ' [ms]' ;
+        env.colorplot.initForeground() ;
+        env.colorplot.render() ;
+        env.signalplot.render() ;
+    }
+
+    // solve or pause simulations ........................................
+    env.solveOrPause = function(){
+        env.running = !env.running ;
+        if (env.running){
+            env.colorplot.status.text = 'Running...' ;
+        }else{
+            env.colorplot.status.text = 'Paused!' ;
+        }
+    } 
+
+    // initialize the solution using the solvers .........................
+    env.initialize = async function(){
+        env.time = 0 ;
+        env.counter = 0 ;
+        env.signalplot.init(env.time) ;
+        env.initStates() ; 
+
+        env.pacemaker_s1.init() ;
+        env.pacemaker_s2.init() ;
+
+        return ;
+    }
+
+    env.init = ()=>{
+        env.initialize() ;
+    }
+    env.init() ;
+    
+/*------------------------------------------------------------------------
+ * editors: 
+ *------------------------------------------------------------------------
+ */
+    let srcs = {} ;
+    
+    srcs.cable = {
+        source : env.fcable.fragmentShader.source,
+        solvers: [env.fcable, env.scable] ,
+        title : 'cable' ,
+        filename: 'cable.frag' ,
+    } ;
+
+    for(let i=0 ; i<model.initialize.length; i++){
+        let comp = model.initialize[i] ;
+        let src = { source : comp.fragmentShader } ;
+        src.solvers = [env['finitialize'+i], env['sinitialize'+i] ] ;
+        src.title   = 'initialize'+i ;
+        src.filename= 'initialize'+i+'.frag' ;
+
+        srcs[src.title] = src ;
+    }
+
+    for(let i=0 ; i<model.compute.length; i++){
+        let comp = model.compute[i] ;
+        let src = { source : comp.fragmentShader } ;
+        src.solvers = [env['fcompute'+i], env['scompute'+i] ] ;
+        src.title   = 'compute'+i ;
+        src.filename= 'compute'+i+'.frag' ;
+
+        srcs[src.title] = src ;
+    }
+
+    env.editor = new Abubu.Editor({
+        sources : srcs ,
+        id : 'editor', 
+        active: 'cable' ,
+    } ) ;
+
+    env.toggleEditor = function(){
+        $("#editorSection").fadeToggle(300)
+    } ;
+
+/*------------------------------------------------------------------------
+ * createGui
+ *------------------------------------------------------------------------
+ */
+   createGui() ;
+
+/*------------------------------------------------------------------------
+ * model overwrites default parameters 
+ *------------------------------------------------------------------------
+ */
+    if ( env.model.overwrites ){
+        if (env.model.overwrites.length !=0 ){
+            for(let param of env.model.overwrites){
+                env[param] = env.model[param] ;
+            }
+            env.gui.updateDisplay() ;
+        }
+    }
+
+/*------------------------------------------------------------------------
+ * rendering the program ;
+ *------------------------------------------------------------------------
+ */
+    env.render = async function(){
+        if (env.running){
+            for(let i=0; i<env.skip; i++){
+                /* This running order is important in 
+                 *      - correct visualization of results
+                 *      - correct pacing time
+                 *      - correct file naming based on timestamps
+                 */
+                env.pacemaker_s1.run() ;
+                env.pacemaker_s2.run() ;
+                env.signalplot.update(env.time) ;
+                env.march() ;
+            }
+        }
+        env.display() ;
+        requestAnimationFrame(env.render) ;
+    }
+
+/*------------------------------------------------------------------------
+ * add environment to document
+ *------------------------------------------------------------------------
+ */
+    document.env = env ;
+
+/*------------------------------------------------------------------------
+ * render the webgl program
+ *------------------------------------------------------------------------
+ */
+    env.render();
+
+}/*  End of loadWebGL  */
+
+/*========================================================================
+ * add multiple parameters to the GUI
+ *========================================================================
+ */ 
+function addToGui( 
+        guiElemenent ,  // gui element to add options into
+        obj,            // object that holds parameters
+        paramList,      // array of strings that contains list 
+                        // of parmeters to be added
+        solverList,     // array of solvers that need to be update upon 
+                        // change of a parameter through gui interactions
+        callback,
+    ){
+    let elements = {} ;
+    for(let param of paramList){
+        elements[param] = 
+            guiElemenent.add(obj, param ).onChange( ()=> {
+                Abubu.setUniformInSolvers( 
+                    param, obj[param], solverList ) ;
+                if (callback)
+                    callback() ;
+            } ) ;
+    }
+    return elements ;
+}
+/*========================================================================
+ * addVectorToGui
+ *========================================================================
+ */
+function addVectorToGui(
+    guiElem, 
+    obj, 
+    param , opts){
+    let elems = [] ;
+    let labels = opts?.labels ?? 'XYZW' ;
+
+    for (var i=0 ; i< obj[param].length ; i++){
+        elems.push(guiElem.add( obj[param] , i.toString() )
+            .name( param + ' ' + labels[i] ) );
+       elems[i].onChange( ()=>{ obj[param] = obj[param] } ) ;
+        if ( opts?.callback ){
+            elems[i].onChange( ()=>{ 
+                    obj[param] = obj[param];
+                    opts.callback();
+                }   ) ;
+        }
+
+        if ( opts?.min ){
+            elems[i].min( opts.min ) ;
+        }
+        if ( opts?.max ){
+            elems[i].max( opts.max ) ;
+        }
+        if ( opts?.step ){
+            elems[i].step( opts.step ) ;
+        }
+         
+    }
+    return elems ;
+}
+
+/*========================================================================
+ * addModelParamsToGui
+ *========================================================================
+ */
+function addModelParamsToGui(mdl, guiElem){
+
+/*------------------------------------------------------------------------
+ * guiGeneral
+ *------------------------------------------------------------------------
+ */
+    for(let param of mdl.guiGeneral ){
+        let sols = [] ;
+        let callback = param.callback ;
+        // collecting compute solvers for the param
+        for(let p of param.solvers.compute){
+            for(let ord of ['f','s']){
+                sols.push(env[ord+'compute'+p]) ;
+            }
+        }
+        
+        // collecting initialize solvers for the param
+        for(let p of param.solvers.initialize){
+            for(let ord of ['f','s']){
+                sols.push(env[ord+'initialize'+p]) ;
+            }
+        }
+
+        // add the parameter if its just a number
+        if (param.type == 'number'){
+            addToGui( guiElem, mdl, [param.name],sols,callback ) ;
+        }
+
+        // group of numbers
+        if (param.type == 'numbers'){
+            addToGui( guiElem, mdl, param.names, sols,callback ) ;
+        }
+
+        // dropdown menue
+        if (param.type == 'dropdown'){
+            guiElem.add( mdl, param.name , param.options )
+                .name(param.name)
+                .onChange(()=>{
+                    let dvalue = _.indexOf( param.options, 
+                                            mdl[param.name]) ;
+
+                    for(let i in param.controls){
+                        let cvar = param.controls[i] ;
+                        for(let sol of sols){
+                            mdl[cvar] = param.values[dvalue][i] ;
+                            sol.uniforms[cvar].value = 
+                                param.values[dvalue][i] ;
+                        }
+                        if (_.includes(mdl.overwrites, cvar)){
+                            env[cvar] = mdl[cvar] ;
+                        }
+
+                    }
+                    if (callback)
+                        callback() ;
+                    guiElem.updateDisplay() ;
+                    guiElem.levelUp.updateDisplay() ;
+                } );
+        }
+    }
+
+/*------------------------------------------------------------------------
+ * guiGroups
+ *------------------------------------------------------------------------
+ */
+    for(let group of Object.keys(mdl.guiGroups)){
+        guiElem[group] = guiElem.addFolder(group) ;
+        let gelem = guiElem[group] ;
+        gelem.levelUp = guiElem ;
+        for(let param of mdl.guiGroups[group]){
+            let sols = [] ;
+            let callback = param.callback ;
+
+            // collecting compute solvers for the param
+            for(let p of param.solvers.compute){
+                for(let ord of ['f','s']){
+                    sols.push(env[ord+'compute'+p]) ;
+                }
+            }
+            
+            // collecting initialize solvers for the param
+            for(let p of param.solvers.initialize){
+                for(let ord of ['f','s']){
+                    sols.push(env[ord+'initialize'+p]) ;
+                }
+            }
+
+            // add the parameter if its just a number
+            if (param.type == 'number'){
+                addToGui( gelem, mdl, [param.name],sols,callback ) ;
+            }
+
+            // group of numbers
+            if (param.type == 'numbers'){
+                addToGui( gelem, mdl, param.names, sols,callback  ) ;
+            }
+
+            // dropdown menue
+            if (param.type == 'dropdown'){
+                gelem.add( mdl, param.name , param.options )
+                    .name(param.name )
+                    .onChange(()=>{
+                        let dvalue = _.indexOf( param.options, 
+                                            mdl[param.name]) ;
+
+                        for(let i in param.controls){
+                            let cvar = param.controls[i] ;
+                            for(let sol of sols){
+                                mdl[cvar] = param.values[dvalue][i] ;
+                                sol.uniforms[cvar].value = 
+                                    param.values[dvalue][i] ;
+                            }
+                            if (_.includes(mdl.overwrites, cvar)){
+                                env[cvar] = mdl[cvar] ;
+                            }
+                        }
+                        if (callback)
+                            callback() ;
+                        gelem.updateDisplay() ;
+                        gelem.levelUp.updateDisplay() ;
+                } );
+            }
+        }
+    }
+}
+/*========================================================================
+ * createGui
+ *========================================================================
+ */
+function createGui(){
+    env.gui = new Abubu.Gui() ;
+    env.gui.pnl1 = env.gui.addPanel({width:300}) ;
+    let pnl1 = env.gui.pnl1 ;
+    
+    // model .............................................................
+    pnl1.f0 = pnl1.addFolder('Simulation Parameters') ;
+    addToGui( pnl1.f0, env, env.cableParams, [env.fcable,env.scable] ) ;
+    addToGui( pnl1.f0, env, env.timesteppingParams, 
+            env.timesteppingSolvers ) ;
+    pnl1.f0_1 = pnl1.addFolder( 'Model Specific Parameters'    ) ;
+    pnl1.f0_1.levelUp = pnl1.f0 ;
+
+
+    addModelParamsToGui( env.model, pnl1.f0_1) ;
+    pnl1.f0_1.stimulation.add(env,'stimulate')
+
+    // click -------------------------------------------------------------
+    pnl1.f2 = pnl1.addFolder('Click') ;
+    pnl1.f2.add(env.click, 'exitationThreshold' ).step(0.01) ;
+    pnl1.f2.add(env.click, 'radius' ).min(0.01).step(0.01) ;
+
+    pnl1.pmkr = pnl1.addFolder('Pacemakers') ;
+    pnl1.pmkr.s1 = pnl1.pmkr.addFolder('S1') ;
+    addToGui(pnl1.pmkr.s1 ,env.pacemaker_s1,
+            [   'active','paceAtInit', 'period',
+                'circular','vertical', 'x', 'y',
+                'radius','value' ] , [] ) ;
+    pnl1.pmkr.s1.open() ;
+    pnl1.pmkr.s2 = pnl1.pmkr.addFolder('S2') ;
+    addToGui(pnl1.pmkr.s2 ,env.pacemaker_s2,
+            [   'active','paceAtInit', 'period',
+                'circular','vertical', 'x', 'y',
+                'radius','value' ] , [] ) ;
+    pnl1.pmkr.s2.open() ;
+
+    // display -----------------------------------------------------------
+    pnl1.f3 = pnl1.addFolder('Display') ;
+    // pnl3.visurf = env.visurf.controlByGui( pnl1.f1) ;
+
+    pnl1.f3.add(env.colorplot, 'colormap', env.colorplot.colormapList) ;
+    pnl1.f3.add(env, 'skip' ) ;
+    pnl1.f3.open() ;
+    
+    // source code editors ...............................................
+    pnl1.f4  = pnl1.addFolder('Edit/Save/Load Source Code') ;
+    pnl1.f4.add( env , 'toggleEditor').name('Show/Hide Editor' ) ;
+    pnl1.f4.add( env.editor , 'title', env.editor.titles )
+        .name('Edit source').onChange( ()=>{ pnl1.updateDisplay() ;} ) ;
+    pnl1.f4.add( env.editor , 'filename').name('Filename') ;
+    pnl1.f4.add( env.editor , 'save' ).name('Save to file') ;
+    pnl1.f4.add( env.editor , 'load' ).name('Load from file') ;
+
+    // simulation ........................................................
+    pnl1.flast = pnl1.addFolder('Simulation') ;
+    pnl1.flast.add(env, 'init' ).name('Initialize Solution') ;
+    pnl1.flast.add(env, 'solveOrPause').name('Solve/Pause') ;
+    pnl1.flast.add(env, 'time').name('Solution Time [ms]').listen() ;
+    pnl1.flast.open() ;
+    return ;
+} /* End of createGui */
+
+
+/*========================================================================
+ * uploadLog: uploads message to a server to save to disk
+ *========================================================================
+ */
+async function uploadLog(message, options ){
+    const data = {
+        message     : message,
+        finished    : options?.finished     ?? false ,
+        mode        : options?.mode         ?? 'a' ,  /* a: append, w: write */
+        fileName    : options?.fileName     ?? 'log' ,
+        filePath    : options?.filePath     ?? 
+            (options?.path ?? 'output/logs') ,
+    } ;
+
+    let server = options?.server ?? 'save_log.php' ;
+
+    try{
+        let response = await fetch(server, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }) ;
+
+        let dat = await response.text() ;
+        return dat ;
+    }catch(err){
+        console.error('Error: ', err ) ;
+        return err ;
+    }
+};
+/*========================================================================
+ * uploadNumbers: uploads numbers to a server to save to disk
+ *========================================================================
+ */
+async function delete_file(options){
+    const data = {
+        fileName    : options?.fileName  ?? 'fileName' ,
+        filePath    : options?.filePath  ?? 
+            (options?.path ?? 'output') ,
+    } ;
+
+    let server = options?.server ?? 'delete_file.php' ;
+
+    try{
+        let response = await fetch(server, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }) ;
+
+        let dat = await response.text() ;
+        return dat ;
+    }catch(err){
+        console.error('Error: ', err ) ;
+        return err ;
+    }
+};
+
+/*========================================================================
+ * delete_png_files: delete all png files in path 
+ *========================================================================
+ */
+async function delete_png_files(options){
+    const data = {
+        filePath    : options?.filePath  ?? 
+            (options?.path ?? 'output/images') ,
+    } ;
+
+    let server = options?.server ?? 'delete_png_files.php' ;
+
+    try{
+        let response = await fetch(server, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }) ;
+
+        let dat = await response.text() ;
+        return dat ;
+    }catch(err){
+        console.error('Error: ', err ) ;
+        return err ;
+    }
+};
+
+/*========================================================================
+ * uploadNumbers: uploads numbers to a server to save to disk
+ *========================================================================
+ */
+async function uploadNumbers(numbers, options ){
+    const data = {
+        numbers     : numbers,
+        binary      : options?.binary       ?? false ,
+        finished    : options?.finished     ?? false ,
+        mode        : options?.mode         ?? 'a' ,  /* a: append, w: write */
+        fileName    : options?.fileName     ?? 'numbers' ,
+        filePath    : options?.filePath     ?? 
+            (options?.path ?? 'output/data') ,
+    } ;
+
+    let server = options?.server ?? 'save_numbers.php' ;
+
+    try{
+        let response = await fetch(server, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }) ;
+
+        let dat = await response.text() ;
+        return dat ;
+    }catch(err){
+        console.error('Error: ', err ) ;
+        return err ;
+    }
+};
+
+/*========================================================================
+ * uploadCanvas: uploads the canvas to server to be saved to disk
+ *========================================================================
+ */
+async function uploadCanvas( canvas, options){
+    let fileName= options?.fileName ?? 'default_name' ;
+    let filePath= options?.filePath ?? 'output/images' ;
+    let server  = options?.server   ?? 'save_canvas.php' ;
+    
+    // convert canvas to DataURL .........................................
+    var dataURL = canvas.toDataURL('image/png');
+
+    // send information to server for saving .............................
+    try{
+        const response = await fetch(server, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body:   'image=' + encodeURIComponent(dataURL) + 
+                    '&filePath=' + encodeURIComponent(filePath) +
+                    '&fileName=' + encodeURIComponent(fileName)
+        } );
+        const result = await response.text();
+        return result ;
+    }catch(error) { // Catch all errors ..................................
+        return error ;
+        console.error('Error:', error);
+    }
+}
+/*========================================================================
+ * IntervalCaller
+ *========================================================================
+ */
+class IntervalCaller{
+    constructor(opts={}){
+        this.interval = opts?.interval ?? 10 ;
+        this.callback = opts?.callback ?? (()=>{}) ;
+        this.active   = opts?.active ?? false ;
+        this.counter  = -1 ;
+        this.tsNo = Infinity ;
+    }
+
+    get number(){
+        return this.counter ;
+    }
+/*------------------------------------------------------------------------
+ * init: initializes the caller
+ *------------------------------------------------------------------------
+ */
+    async init(){
+        this.counter    = -1 ;
+        this.tsNo = Infinity ;
+    }
+
+    get tsLimit(){
+        return Math.round(this.interval/env.dt)
+    }
+/*------------------------------------------------------------------------
+ * call: call the callback function at appropriate intervals
+ *------------------------------------------------------------------------
+ */
+    async call(){
+        this.tsNo += 2 ;
+
+        if (this.tsNo < this.tsLimit) return ;
+
+        this.tsNo = 0 ;     // set tsNo = 0 whenever tsLimit is reached
+        this.counter++ ;    // increment counter 
+
+        if (this.active){ 
+            await this.callback() ; 
+        }
+        return ;
+    }
+
+    run(){
+        this.call() ;
+    }
+}
+
+/*========================================================================
+ * Pacemaker :
+ *      new Pacemaker(texture_1, texture_2
+ *========================================================================
+ */
+class Pacemaker{
+    constructor(texture_1, texture_2, opt={}){
+
+        this._x         = opt?.x        ?? 0. ;
+        this._y         = opt?.y        ?? 0. ;
+        this._radius    = opt?.radius   ?? 0.01 ;
+        this._paceValue = opt?.value    ?? 1.0 ;
+        this._channel   = 'r' ;
+        this.period     = opt?.period   ?? 300 ;
+        this.active     = opt?.active   ?? false ;
+        this.dt         = opt?.dt       ?? 0.01 ;
+        this._circular  = opt?.circular ?? true ;
+        this._vertical  = opt?.vertical ?? true ;
+        this.paceAtInit = opt?.paceAtInit?? true ;
+        this.callback   = opt?.callback ?? function(){} ;
+        this.tsNo       = Infinity ;
+
+        this.multipliers = { 
+            r : [1,0,0,0] ,
+            g : [0,1,0,0] ,
+            b : [0,0,1,0] ,
+            a : [0,0,0,1] 
+        } ;
+
+        this.solver = new Abubu.Solver({
+            fragmentShader: source('pacemaker' ) ,
+            uniforms : {
+                radius : { type : 'f',  value : this.radius } ,
+                center : { type : 'v2', value : this.center } ,
+                paceValue  : { type : 'f',  value : this.paceValue  } ,
+                multiplier : { type : 'v4', value : [1,0,0,0] } ,
+                circular   : { type : 'b',  value : this.circular } ,
+                vertical   : { type : 'b',  value : this.vertical } ,
+                icolor : { type : 't',  value : texture_1   } ,
+            } ,
+            targets: {
+                ocolor : { location : 0 , target: texture_2 } ,
+            }
+        } )  ;
+        this.copy = new Abubu.Copy( texture_2, texture_1 ) ;
+
+        this.channel = opt?.channel ?? 'r' ;
+
+        this.init() ;
+
+    } // end of constructor
+
+    get center(){   return [this._x, this._y] ; }
+    get radius(){   return this._radius ;       }
+
+    get x(){        return this._x ;            } 
+    get y(){        return this._y ;            } 
+
+    get value(){
+        return this._paceValue ;
+    }
+
+    get tsLimit(){
+        return Math.round(this.period/env.dt)
+    }  
+
+    get paceValue(){
+        return this._paceValue ;
+    }
+
+    get channel(){
+        return this._channel ;
+    }
+
+    get circular(){
+        return this._circular ;
+    }
+
+    get vertical(){
+        return this._vertical ;
+    }
+
+    set x(v){
+        this._x = v ;
+        this.solver.uniforms.center.value = this.center ;
+    }
+
+    set y(v){
+        this._y = v ;
+        this.solver.uniforms.center.value = this.center ;
+    }
+    
+    set radius(v){
+        this._radius = v ; 
+        this.solver.uniforms.radius.value = v ;
+    }
+
+    set channel(v){
+        let c = v?.toLowerCase()[0] ; // get the first character
+        this._channel = 'rgba'.includes(c) ? c : this._channel ;
+        this.solver.uniforms.multiplier.value = this.multiplier ;
+    } /* end of set channel(v) */
+
+    set paceValue(v){
+        this._paceValue = v ?? this._paceValue ;
+        this.solver.uniforms.paceValue.value = this._paceValue ;
+    }
+
+    set circular(v){
+        this._circular = v ;
+        this.solver.uniforms.circular.value = v ;
+    }
+
+    set vertical(v){
+        this._vertical = v ;
+        this.solver.uniforms.vertical.value = v ;
+    }
+
+    set value(v){
+        this.paceValue = v ;
+    }
+
+    init(){
+        if (this.paceAtInit){
+            this.tsNo = Infinity ;
+        }else{
+            this.tsNo = 0; 
+        }
+    }
+
+    solve(){
+        this.tsNo += 2 ;
+        if (this.tsNo < this.tsLimit ) return ;
+        
+        this.tsNo = 0. ;
+        if (!this.active) return ;
+
+        this.solver.render() ;
+        this.copy.render() ;
+        this.callback() ;
+    }
+
+    run(){
+        this.solve() ;
+    }
+    call(){
+        this.solve() ;
+    }
+
+}
+
+
+
+/*========================================================================
+ * ChannelSample:  samples a particular channel of an RGBA texture. 
+ *
+ *  constructor(texture : the input to be sampled,
+ *              channel : the color channel to sample from: 'r','g','b',
+ *              or 'a' ) ;
+ *
+ *  public params
+ *      .texture : the input texture to be sampled 
+ *      .channel : the color channel to be chosen to be sampled
+ *      .value   : the value of the sample    
+ *========================================================================
+ */
+class ChannelSample{
+/*------------------------------------------------------------------------
+ * Class constructor(texture, channel) 
+ *
+ * texture: is the input texture to be sampled
+ * channel: is the color channel to be sampled (options: 'r', 'g','b','a')
+ *------------------------------------------------------------------------
+ */
+    constructor(texture, options ){
+        if( texture == undefined ) 
+            throw("Input texture is not defined!") ;
+
+        this._texture   = texture ;
+        this._channel   = options?.channel  ?? 'r' ;
+        this._width     = options?.width    ?? 1 ;
+        this._height    = options?.height   ?? 1 ;
+
+        this.multipliers = { 
+            r : 0 ,
+            g : 1 ,
+            b : 2 ,
+            a : 3 
+        } ;
+
+        this.output  = new Abubu.Float32Texture(this.width, this.height, 
+            { pairable: 'true' } ) ;
+
+                
+        this.solver = new Abubu.Solver({
+            fragmentShader : source('channelSampler') ,
+            uniforms : {
+                itexture : { type : 't', value : this.texture } ,
+            } ,
+            targets : {
+                ocolor : { location : 0, target : this.output } ,
+            }
+        } ) ;
+
+    }/* end of constructor */
+
+/*------------------------------------------------------------------------
+ * getter methods
+ *------------------------------------------------------------------------
+ */
+    get channel(){
+        return this._channel.toLowerCase() ;
+    }
+
+    get value(){
+        this.solver.render() ;
+        return this.output.value.filter(
+                (_,index)=> (index + this.multiplier ) % 4 === 0 )  ;
+    }
+
+    get texture(){
+        return this._texture ;
+    }
+    
+    set width(nv){
+        this._width = nv ;
+        this.output.width = this.width ;
+        //this.output.reader.updateSize() ;
+    }
+
+    set height(nv){
+        this._height = nv ;
+        this.output.height = this.height ;
+        //this.output.reader.updateSize() ;
+    }
+
+    get width(){
+        return Math.min(this._width, this.texture.width) ;
+    }
+
+    get height(){
+        return Math.min(this._height, this.texture.height) ; 
+    }
+
+    get multiplier(){
+        return this.multipliers[this.channel] ;
+    }
+
+/*------------------------------------------------------------------------
+ * Setter methods
+ *------------------------------------------------------------------------
+ */
+    // set the input texture to be sampled ...............................
+    set texture(v){
+        this._texture = v ;
+        this.output.width = this.width ;
+        this.output.height= this.height ;
+
+        this.solver.uniforms.itexture.value = this.texture ;
+    } /* end of set texture(v) */
+
+    // set the color channel to be sampled ...............................
+    set channel(v){
+        let c = v?.toLowerCase()[0] ; // get the first character
+        this._channel = 'rgba'.includes(c) ? c : this._channel ;
+        this.solver.uniforms.multiplier.value = this.multiplier ;
+    } /* end of set channel(v) */
+
+} /* end of ColorSampler */
+
+
+/*========================================================================
+ * saveJSON :   save a data structure to file 
+ *========================================================================
+ */
+function saveToJSONFile( data, filename ){
+    let jsonData = JSON.stringify(data) ;
+    let file = new Blob([jsonData] , { type : 'text/plain' } ) ;
+
+    let a = document.createElement('a') ;
+    a.href = URL.createObjectURL(file) ;
+    a.download = filename ;
+    a.click() ;
+}
+
+/*========================================================================
+ * JSONFileLoader : a simple class for loading a json file
+ *========================================================================
+ */
+class JSONFileLoader{
+    constructor(callback){
+        this.callback = callback ;
+        this._input = document.createElement('input') ;
+        this.input.setAttribute('type', 'file' ) ;
+        this.input.setAttribute('accept', '.json, .JSON' ) ;
+        this.load = ()=>{ this.input.click()} ;
+        
+        this.input.onchange = ()=>{
+            let file = this.input.files[0] ;
+            if (!file) return ;
+
+            let reader = new FileReader() ;
+            reader.readAsText(file) ;
+            reader.onload = (e) =>{
+                let result = e.target.result ;
+                let json_result = JSON.parse(result) ;
+
+                this.callback(json_result) ;
+            }
+        }
+    }
+    get input(){ return this._input ; } ; 
+}
+
+
+</script>
+
+
+</body>
+</html>
+
