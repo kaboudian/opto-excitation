@@ -2,7 +2,7 @@
 
 Please see the following links for the live programs:
 1. [Optogenetic Excitation of 2D Tissue with a Uniform Domain](https://kaboudian.github.io/opto-excitation/uniform_opto_pulse.html): This model assumes that the excitation cuases opening of _some_ of the channels on all cell in the 2D domain.
-2. [Optogenetic Excitation of 2D Tissue with Random Variability in Cells](ttps://kaboudian.github.io/opto-excitation/non_uniform_opto_pulse.html): This model assumes that for all the cells a minimum threshold is required to open a portion of the ion channels. This threshold varies randomly among the cells.
+2. [Optogenetic Excitation of 2D Tissue with Random Variability in Cells](https://kaboudian.github.io/opto-excitation/non_uniform_opto_pulse.html): This model assumes that for all the cells a minimum threshold is required to open a portion of the ion channels. This threshold varies randomly among the cells.
 
 ## Disclaimer
 
