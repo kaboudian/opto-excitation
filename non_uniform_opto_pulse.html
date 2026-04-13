@@ -180,6 +180,7 @@ div.editor {
 
 </style>
 
+<script src="./TinyMT.js"></script>
 <style>
     td, th{
         vertical-align: top ;
@@ -193,7 +194,7 @@ div.editor {
                                 call to make sure the user can choose 
                                 which model to run -->
 <body onload='loadWebGL()'>
-    <h1>Optogenetic Excitation of 2D Tissue with a Uniform Domain</h1>
+    <h1>Optogenetic Excitation of 2D Tissue with Random Variability in Cells</h1>
         <table>
             </tr>
             <tr>
@@ -1300,6 +1301,7 @@ in vec2 cc  ;
  *========================================================================
  */
 uniform sampler2D   icolor0 ;
+uniform sampler2D   excitability ;
 
 uniform float   dt ;        /* time step                */
 uniform float   C_m ;
@@ -1429,12 +1431,18 @@ void main(){
 
     float I_stim_1 = 0. ;
     float I_stim_2 = 0. ;
+
+    float cellExcitabilityThreshold= texture(excitability,cc).r ;
+
     if (length(cc-vec2(stimulus_1_x,stimulus_1_y))<stimulus_1_radius){
-        I_stim_1 = -stimulus_1 ;
-    }
+        if (stimulus_1>cellExcitabilityThreshold)
+            I_stim_1 = -stimulus_1 ;
+    } 
 
     if (length(cc-vec2(stimulus_2_x,stimulus_2_y))<stimulus_2_radius){
-        I_stim_2 = -stimulus_2 ;
+        if (stimulus_2>cellExcitabilityThreshold){
+            I_stim_2 = -stimulus_2 ;
+        }
     }
 
     float  I_sum   = J_fi + J_so + J_si+(I_stim_1 + I_stim_2)*float(stimulus_active)  ;
@@ -1461,11 +1469,11 @@ void main(){
 <!--&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&-->
 <script>
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
- * app.js       : A generalized model loader
- *
+ * app.js : 
+ * 
  * PROGRAMMER   : ABOUZAR KABOUDIAN
- * DATE         : Sat 09 Nov 2024 20:31:55 (EST)
- * PLACE        : Maryland, USA.
+ * DATE         : Apr 13, 2026
+ * PLACE        : USA.
  *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
  */
 "use strict" ;
@@ -1548,7 +1556,9 @@ function loadWebGL()
     env.allFloats   = [] ; // uniform shared floats
     env.allInts     = [] ; // uniform shared integers
     env.allTxtrs    = [] ; // uniform shared textures
-            
+
+
+
 /*------------------------------------------------------------------------
  * Initiate all coeficients 
  *------------------------------------------------------------------------
@@ -1660,9 +1670,13 @@ mmm.fromEnv = ['C_m','dt'] ; // uniforms from the env variable
  * it will return true if the array contains the member.
  */
 
+mmm.floats = [...mmm.fromEnv] ;
+
 mmm.overwrites = ['diffCoef'] ; 
 // overwriting the values in the env
                      // environmental variable
+mmm.fromEnv = [...mmm.fromEnv, 'excitability'] ;
+
 
 /*------------------------------------------------------------------------
  * Stimulus Strengths
@@ -1689,7 +1703,7 @@ mmm.stimulus_floats = [
 
 mmm.stimulus_active = true ;
 
-mmm.floats = [...mmm.stimulus_floats] ;
+mmm.floats = [...mmm.floats,...mmm.stimulus_floats] ;
 
 /*------------------------------------------------------------------------
  * Model Specific Uniforms
@@ -2263,7 +2277,7 @@ for(let i in mmm.modelParams ){
     mmm[vname] = mmm.human_epi[i] ;
 }
 
-mmm.floats = [...mmm.floats,...mmm.fromEnv,...mmm.modelParams ] ;
+mmm.floats = [...mmm.floats,...mmm.modelParams ] ;
 
 
 /*------------------------------------------------------------------------
@@ -2302,7 +2316,8 @@ mmm.compute = [
                                         // the value
 
             f : [...mmm.floats] ,       // floats
-            b : ['stimulus_active']
+            b : ['stimulus_active'] ,
+            t : ['excitability'] ,
         }
     } ,
 ] ;
@@ -2493,6 +2508,31 @@ mmm.guiGroups = {
     env.svcolor = new Abubu.Float32Texture( 
                 env.width, env.height, { pairable : true } ) ;
 
+/*------------------------------------------------------------------------
+ * creating the substrate excitablity matrix 
+ *------------------------------------------------------------------------
+ */
+    // Psudo Random Number Generator 
+    env.prng = new TinyMT() ;
+    
+    env.data = new Float32Array(env.width*env.height*4) ;
+    
+    { // block that initializes the random numbers
+        let p = 0 ; // pixel number
+        let rn = 0 ; // random number
+        for(let j=0; j<env.height; j++){ // row number
+            for(let i=0; i<env.width; i++){ // column number 
+                rn = env.prng.random(); 
+                env.data[p++]=rn ;  // r
+                env.data[p++]=rn ;  // g
+                env.data[p++]=rn ;  // b
+                env.data[p++]=rn ;  // a
+            }
+        }
+    }
+
+    env.excitability = new Abubu.TableTexture(env.data, env.width, env.height) ;
+    
 /*------------------------------------------------------------------------
  * Copy vltTextures to vcolor textures
  *------------------------------------------------------------------------
